@@ -23,6 +23,8 @@ export class Agency {
   })
   status: 'ACTIVE' | 'INACTIVE';
 
-  @OneToMany(() => Office, office => office.agency)
+  @OneToMany(() => Office, office => office.agency, {
+    eager: true
+  })
   offices: Office[];
 }
