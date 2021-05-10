@@ -20,8 +20,8 @@ describe('AgencyController (e2e)', () => {
     repository = app.get(constants.AGENCY_REPOSITORY);
   });
 
-  beforeEach(async () => {
-    await repository.clear()
+  afterEach(async () => {
+    await repository.delete({})
   })
 
   it('should return list of agencies', async () => {
@@ -70,7 +70,7 @@ describe('AgencyController (e2e)', () => {
       });
   });
 
-  it('should create new agency', async () => {
+  it('should create the new agency', async () => {
     await request(app.getHttpServer())
       .post(`/api/agency`)
       .send({

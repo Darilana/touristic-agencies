@@ -1,4 +1,5 @@
-import { Entity, Column, PrimaryGeneratedColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { Office } from '../office/office.entity';
 
 @Entity()
 export class Agency {
@@ -21,4 +22,7 @@ export class Agency {
     enum: ['ACTIVE', 'INACTIVE']
   })
   status: 'ACTIVE' | 'INACTIVE';
+
+  @OneToMany(() => Office, office => office.agency)
+  offices: Office[];
 }
