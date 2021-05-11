@@ -77,4 +77,35 @@ describe('OfficeController (e2e)', () => {
     })
     expect(searchResult).toEqual(undefined);
   });
+
+  it('should update the office', async () => {
+    const agency = await agencyRepository.save({
+      name: 'TEST_NAME',
+      description: 'TEST_DESCRIPTION',
+      phoneNumber: 123456789,
+    });
+    const office = await officeRepository.save({
+      address: 'TEST_ADDRESS',
+      phoneNumber: 123456789,
+      workingHours: 'TEST_WORKING_HOURS',
+      agency: {
+        id: agency.id
+      }
+    });
+    await request(app.getHttpServer())
+      .put(`/api/office/${office.id}`)
+      .send({
+        id: office.id,
+        address: 'TEST_ADDRESS_2',
+      })
+      .expect(200)
+      .expect(response => {
+        expect(response.body).toEqual({
+          id: office.id,
+          address: 'TEST_ADDRESS_2',
+          phoneNumber: 123456789,
+          workingHours: 'TEST_WORKING_HOURS',
+        })
+      });
+  });
 });
