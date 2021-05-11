@@ -55,6 +55,8 @@ describe('TourController (e2e)', () => {
           season: tour.season,
           duration: tour.duration,
           id: tour.id,
+          categories: [],
+          directions: []
         }])
       });
   });
@@ -86,6 +88,8 @@ describe('TourController (e2e)', () => {
           season: tour.season,
           duration: tour.duration,
           id: tour.id,
+          categories: [],
+          directions: []
         })
       });
   });
@@ -142,6 +146,66 @@ describe('TourController (e2e)', () => {
           description: 'TEST_DESCRIPTION',
           season: 'TEST',
           duration: 'P1W',
+        })
+      });
+  });
+
+  it('should create the new tour with categories', async () => {
+    const agency = await agencyRepository.save({
+      name: 'TEST_NAME',
+      description: 'TEST_DESCRIPTION',
+      phoneNumber: 123456789,
+    });
+    await request(app.getHttpServer())
+      .post(`/api/tour`)
+      .send({
+        name: 'TEST_NAME',
+        price: 10.00,
+        description: 'TEST_DESCRIPTION',
+        season: 'TEST',
+        duration: 'P1W',
+        agencyId: agency.id,
+        categories: [{ name: 'TEST1' }, { name: 'TEST2' }]
+      })
+      .expect(201)
+      .expect(response => {
+        expect(response.body).toMatchObject({
+          name: 'TEST_NAME',
+          price: 10.00,
+          description: 'TEST_DESCRIPTION',
+          season: 'TEST',
+          duration: 'P1W',
+          categories: [{ name: 'TEST1' }, { name: 'TEST2' }]
+        })
+      });
+  });
+
+  it('should create the new tour with directions', async () => {
+    const agency = await agencyRepository.save({
+      name: 'TEST_NAME',
+      description: 'TEST_DESCRIPTION',
+      phoneNumber: 123456789,
+    });
+    await request(app.getHttpServer())
+      .post(`/api/tour`)
+      .send({
+        name: 'TEST_NAME',
+        price: 10.00,
+        description: 'TEST_DESCRIPTION',
+        season: 'TEST',
+        duration: 'P1W',
+        agencyId: agency.id,
+        directions: [{ name: 'TEST1' }, { name: 'TEST2' }]
+      })
+      .expect(201)
+      .expect(response => {
+        expect(response.body).toMatchObject({
+          name: 'TEST_NAME',
+          price: 10.00,
+          description: 'TEST_DESCRIPTION',
+          season: 'TEST',
+          duration: 'P1W',
+          directions: [{ name: 'TEST1' }, { name: 'TEST2' }]
         })
       });
   });
