@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Office } from './office.entity';
-import { CreateOfficeParams } from './interfaces';
+import { CreateOfficeParams, UpdateOfficeParams } from './interfaces';
 import constants from '../constants';
 
 @Injectable()
@@ -18,6 +18,11 @@ export class OfficeService {
         id: createOfficeParams.agencyId
       }
     });
+  }
+
+  async update(updateOfficeParams: UpdateOfficeParams): Promise<Office> {
+    await this.officeRepository.update({ id: updateOfficeParams.id }, updateOfficeParams);
+    return this.officeRepository.findOne(updateOfficeParams.id);
   }
 
   async remove(id: number): Promise<void> {

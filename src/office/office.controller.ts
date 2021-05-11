@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { CreateOfficeParams } from './interfaces';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { CreateOfficeParams, UpdateOfficeParams } from './interfaces';
 import { Office } from './office.entity';
 import { OfficeService } from './office.service';
 
@@ -15,5 +15,10 @@ export class OfficeController {
   @Delete(':id')
   async remove(@Param('id') id: number): Promise<void> {
     await this.officeService.remove(id);
+  }
+
+  @Put(':id')
+  async update(@Body() updateOfficeParams: UpdateOfficeParams): Promise<Office> {
+    return this.officeService.update(updateOfficeParams);
   }
 }
