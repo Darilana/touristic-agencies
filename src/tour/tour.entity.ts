@@ -1,5 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
 import { Agency } from '../agency/agency.entity';
+import { Direction } from '../direction/direction.entity';
+import { Category } from '../category/category.entity';
 
 @Entity()
 export class Tour {
@@ -29,4 +31,18 @@ export class Tour {
     nullable: false
   })
   agency: Agency
+
+  @ManyToMany(() => Direction, {
+    eager: true,
+    cascade: true
+  })
+  @JoinTable()
+  directions: Direction[];
+
+  @ManyToMany(() => Category, {
+    eager: true,
+    cascade: true
+  })
+  @JoinTable()
+  categories: Category[];
 }
