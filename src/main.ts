@@ -2,6 +2,8 @@ import { NestFactory } from '@nestjs/core';
 import { RenderModule } from 'nest-next';
 import Next from 'next';
 import { AppModule } from './app.module';
+import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+
 
 async function bootstrap() {
   const dev = process.env.NODE_ENV !== 'production';
@@ -10,6 +12,12 @@ async function bootstrap() {
   await app.prepare();
 
   const server = await NestFactory.create(AppModule);
+  const config = new DocumentBuilder()
+    .setTitle('Touristic agencies catalogue')
+    .setVersion('1.0')
+    .build();
+  const document = SwaggerModule.createDocument(server, config);
+  SwaggerModule.setup('api', server, document);
 
   const renderer = server.get(RenderModule);
   renderer.register(server, app);
