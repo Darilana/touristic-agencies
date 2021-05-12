@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Office } from './office.entity';
-import { CreateOfficeParams, UpdateOfficeParams } from './interfaces';
+import { CreateOfficeParams, UpdateOfficeParams } from './office.dto';
 import constants from '../constants';
 
 @Injectable()

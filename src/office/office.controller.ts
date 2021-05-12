@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
-import { CreateOfficeParams, UpdateOfficeParams } from './interfaces';
+import { CreateOfficeParams, UpdateOfficeParams } from './office.dto';
 import { Office } from './office.entity';
 import { OfficeService } from './office.service';
 

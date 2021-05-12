@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { CreateTourParams } from './interfaces';
+import { CreateTourParams } from './tour.dto';
 import { Tour } from './tour.entity';
 import { TourService } from './tour.service';
 

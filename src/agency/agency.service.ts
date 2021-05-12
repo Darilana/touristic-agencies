@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Agency } from './agency.entity';
-import { CreateAgencyParams } from './interfaces';
+import { CreateAgencyParams } from './agency.dto';
 import constants from '../constants';
 
 @Injectable()
