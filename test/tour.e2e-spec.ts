@@ -209,4 +209,40 @@ describe('TourController (e2e)', () => {
         })
       });
   });
+
+  it('should update the tour', async () => {
+    const agency = await agencyRepository.save({
+      name: 'TEST_NAME',
+      description: 'TEST_DESCRIPTION',
+      phoneNumber: 123456789,
+    });
+    const tour = await tourRepository.save({
+      name: 'TEST_NAME',
+      price: 10.00,
+      description: 'TEST_DESCRIPTION',
+      season: 'TEST',
+      duration: 'P1W',
+      agency: {
+        id: agency.id
+      }
+    });
+    return request(app.getHttpServer())
+      .put(`/api/tour/${tour.id}`)
+      .send({
+        name: 'TEST_NAME_2'
+      })
+      .expect(200)
+      .expect(response => {
+        expect(response.body).toEqual({
+          name: 'TEST_NAME_2',
+          price: tour.price,
+          description: tour.description,
+          season: tour.season,
+          duration: tour.duration,
+          id: tour.id,
+          categories: [],
+          directions: []
+        })
+      });
+  });
 });

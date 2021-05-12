@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { CreateAgencyParams } from './agency.dto';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { CreateAgencyParams, UpdateAgencyParams } from './agency.dto';
 import { Agency } from './agency.entity';
 import { AgencyService } from './agency.service';
 
@@ -10,6 +10,11 @@ export class AgencyController {
   @Post()
   create(@Body() createAgencyParams: CreateAgencyParams): Promise<Agency> {
     return this.agencyService.create(createAgencyParams);
+  }
+
+  @Put(':id')
+  update(@Body() updateAgencyParams: UpdateAgencyParams): Promise<Agency> {
+    return this.agencyService.update(updateAgencyParams);
   }
 
   @Get()
