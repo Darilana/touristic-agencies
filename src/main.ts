@@ -3,6 +3,7 @@ import { RenderModule } from 'nest-next';
 import Next from 'next';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 
 async function bootstrap() {
@@ -12,6 +13,7 @@ async function bootstrap() {
   await app.prepare();
 
   const server = await NestFactory.create(AppModule);
+  server.useGlobalPipes(new ValidationPipe());
   const config = new DocumentBuilder()
     .setTitle('Touristic agencies catalogue')
     .setVersion('1.0')

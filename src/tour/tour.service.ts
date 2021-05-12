@@ -1,7 +1,7 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Tour } from './tour.entity';
-import { CreateTourParams } from './interfaces';
+import { CreateTourParams } from './tour.dto';
 import constants from '../constants';
 import { CategoryService } from '../category/category.service';
 import { DirectionService } from '../direction/direction.service';

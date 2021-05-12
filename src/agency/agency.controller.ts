@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { CreateAgencyParams } from './interfaces';
+import { CreateAgencyParams } from './agency.dto';
 import { Agency } from './agency.entity';
 import { AgencyService } from './agency.service';
 
