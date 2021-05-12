@@ -1,5 +1,5 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
-import { CreateTourParams } from './tour.dto';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { CreateTourParams, UpdateTourParams } from './tour.dto';
 import { Tour } from './tour.entity';
 import { TourService } from './tour.service';
 
@@ -10,6 +10,11 @@ export class TourController {
   @Post()
   create(@Body() createTourParams: CreateTourParams): Promise<Tour> {
     return this.tourService.create(createTourParams);
+  }
+
+  @Put(':id')
+  update(@Body() updateTourParams: UpdateTourParams): Promise<Tour> {
+    return this.tourService.update(updateTourParams);
   }
 
   @Get()

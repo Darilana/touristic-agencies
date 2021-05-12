@@ -132,4 +132,29 @@ describe('AgencyController (e2e)', () => {
         })
       });
   });
+
+  it('should update the agency', async () => {
+    const agency = await agencyRepository.save({
+      name: 'TEST_NAME',
+      description: 'TEST_DESCRIPTION',
+      phoneNumber: 123456789,
+    });
+    return request(app.getHttpServer())
+      .put(`/api/agency/${agency.id}`)
+      .send({
+        id: agency.id,
+        description: 'TEST_DESCRIPTION_2'
+      })
+      .expect(200)
+      .expect(response => {
+        expect(response.body).toEqual({
+          id: agency.id,
+          name: agency.name,
+          description: 'TEST_DESCRIPTION_2',
+          phoneNumber: agency.phoneNumber,
+          status: agency.status,
+          offices: []
+        })
+      });
+  });
 });

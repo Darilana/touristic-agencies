@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateAgencyParams {
   @ApiProperty()
@@ -10,5 +10,23 @@ export class CreateAgencyParams {
   description: string;
   @ApiProperty()
   @IsNumber()
+  phoneNumber: number;
+}
+
+export class UpdateAgencyParams {
+  @ApiProperty()
+  @IsNumber()
+  id: number
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  name: string;
+  @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
+  description: string;
+  @ApiProperty({ required: false })
+  @IsNumber()
+  @IsOptional()
   phoneNumber: number;
 }

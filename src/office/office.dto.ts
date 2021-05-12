@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreateOfficeParams {
   @ApiProperty()
@@ -22,11 +22,14 @@ export class UpdateOfficeParams {
   id: number;
   @ApiProperty({ required: false })
   @IsNumber()
+  @IsOptional()
   phoneNumber: number;
   @ApiProperty({ required: false })
   @IsString()
+  @IsOptional()
   workingHours: string;
-  @IsString()
   @ApiProperty({ required: false })
+  @IsString()
+  @IsOptional()
   address: string;
 }

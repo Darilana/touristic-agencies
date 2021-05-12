@@ -1,10 +1,12 @@
 import { Injectable, Inject } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { Tour } from './tour.entity';
-import { CreateTourParams } from './tour.dto';
+import { CreateTourParams, UpdateTourParams } from './tour.dto';
 import constants from '../constants';
 import { CategoryService } from '../category/category.service';
 import { DirectionService } from '../direction/direction.service';
+import { Category } from '../category/category.entity';
+import { Direction } from '../direction/direction.entity';
 
 @Injectable()
 export class TourService {
@@ -29,6 +31,21 @@ export class TourService {
       categories,
       directions
     });
+  }
+  async update(updateTourParams: UpdateTourParams): Promise<Tour> {
+    const categories = await this.categoryService.deduplicateCategories(updateTourParams.categories || []) as Category[]
+    const directions = await this.directionService.deduplicateDirections(updateTourParams.directions || []) as Direction[]
+    const tour = await this.tourRepository.findOne(updateTourParams.id);
+    Object.assign(tour, updateTourParams);
+    tour.categories = categories;
+    tour.directions = directions;
+    return this.tourRepository.save(tour);
+    // await this.tourRepository.update(updateTourParams.id, {
+    //   ...updateTourParams,
+    //   categories,
+    //   directions
+    // });
+    // return this.tourRepository.findOne(updateTourParams.id)
   }
   async findOne(id: number): Promise<Tour | null> {
     return this.tourRepository.findOne(id);
