@@ -1,6 +1,6 @@
 import { Controller, Get, Render, Param, UseGuards, UseFilters } from '@nestjs/common';
-import { BasicAuthGuard } from '../auth/auth-basic.guard';
 import { UnauthorizedExceptionFilter } from '../auth/auth.exception.filter';
+import { BasicAuthGuard } from '../auth/auth-basic.guard';
 
 @UseGuards(BasicAuthGuard)
 @UseFilters(UnauthorizedExceptionFilter)
