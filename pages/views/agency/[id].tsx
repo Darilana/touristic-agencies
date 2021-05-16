@@ -46,9 +46,15 @@ const AgencyDetails: NextPage<Props> = ({ agency }) => {
 };
 
 export async function getServerSideProps(ctx: NextPageContext) {
+  console.log('EHLO');
+  console.log(ctx.req.headers.authorization);
   const { id } = ctx.req.params;
   const props: Props = {
-    agency: (await axios.get(`http://localhost:3000/api/agency/${id}`)).data,
+    agency: (await axios.get(`http://localhost:3000/api/agency/${id}`, {
+      headers: {
+        Authorization: ctx.req.headers.authorization
+      }
+    })).data,
   };
 
   return { props };

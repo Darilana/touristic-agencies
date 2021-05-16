@@ -250,4 +250,57 @@ describe('TourController (e2e)', () => {
         })
       });
   });
+
+  it('should return list of tours by category', async () => {
+    const agency = await agencyRepository.save({
+      name: 'TEST_NAME',
+      description: 'TEST_DESCRIPTION',
+      phoneNumber: 123456789,
+    });
+    const tour1 = await tourRepository.save({
+      name: 'TEST_NAME_1',
+      price: 10.00,
+      description: 'TEST_DESCRIPTION',
+      season: 'TEST',
+      duration: 'P1W',
+      agency: {
+        id: agency.id
+      },
+      categories: [
+        { name: 'TEST_CATEGORY_1' }
+      ]
+    });
+
+    const tour2 = await tourRepository.save({
+      name: 'TEST_NAME_2',
+      price: 10.00,
+      description: 'TEST_DESCRIPTION',
+      season: 'TEST',
+      duration: 'P1W',
+      agency: {
+        id: agency.id
+      },
+      categories: [
+        { name: 'TEST_CATEGORY_2' }
+      ]
+    });
+    return request(app.getHttpServer())
+      .get('/api/tour?category=TEST_CATEGORY_2')
+      .expect(200)
+      .expect(response => {
+        expect(response.body).toHaveLength(1)
+        expect(response.body).toMatchObject([{
+          name: tour2.name,
+          price: tour2.price,
+          description: tour2.description,
+          season: tour2.season,
+          duration: tour2.duration,
+          id: tour2.id,
+          categories: [{
+            name: 'TEST_CATEGORY_2'
+          }],
+          directions: []
+        }])
+      });
+  });
 });

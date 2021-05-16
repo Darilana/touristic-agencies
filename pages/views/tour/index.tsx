@@ -69,9 +69,13 @@ const TourList: NextPage<Props> = ({ tours }) => {
   );
 };
 
-export async function getServerSideProps() {
+export async function getServerSideProps(ctx) {
   const props: Props = {
-    tours: (await axios.get('http://localhost:3000/api/tour')).data
+    tours: (await axios.get('http://localhost:3000/api/tour', {
+      headers: {
+        Authorization: ctx.req.headers.authorization
+      }
+    })).data
   };
 
   return { props };
