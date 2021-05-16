@@ -63,7 +63,7 @@ const AgencyDetailsForm: React.FC<Props> = ({ agency }) => {
     <Box>
       <Box mt={4} mb={2} display="flex" justifyContent="center">
         <Typography variant="h5" color="textSecondary">
-          Деталі
+          Деталі агенції
         </Typography>
       </Box>
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
