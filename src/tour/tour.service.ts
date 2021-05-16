@@ -18,7 +18,17 @@ export class TourService {
   ) {}
 
   async findAll(category?: string, direction?: string): Promise<Tour[]> {
-    return this.tourRepository.find();
+    let queryBuilder = this.tourRepository
+      .createQueryBuilder('tour')
+      .leftJoinAndSelect('tour.directions', 'direction')
+      .leftJoinAndSelect('tour.categories', 'category')
+    if (category) {
+      queryBuilder = queryBuilder.andWhere('category.name = :name', { name: category })
+    }
+    if (direction) {
+      queryBuilder = queryBuilder.andWhere('direction.name = :name', { name: direction })
+    }
+    return queryBuilder.getMany();
   }
   async create(createTourParams: CreateTourParams): Promise<Tour> {
     const categories = await this.categoryService.deduplicateCategories(createTourParams.categories || [])
