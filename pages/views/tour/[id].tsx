@@ -20,11 +20,11 @@ export async function getServerSideProps(ctx: NextPageContext) {
   const { id } = ctx.req.params
   console.log(ctx.req.headers.authorization)
   const props: Props = {
-    tour: (await axios.get(`http://localhost:3000/api/tour/${id}`), {
+    tour: (await axios.get(`http://localhost:3000/api/tour/${id}`, {
       headers: {
         Authorization: ctx.req.headers.authorization
       }
-    }).data
+    })).data
   };
 
   return { props };

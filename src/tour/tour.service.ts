@@ -48,7 +48,9 @@ export class TourService {
     // return this.tourRepository.findOne(updateTourParams.id)
   }
   async findOne(id: number): Promise<Tour | null> {
-    return this.tourRepository.findOne(id);
+    return this.tourRepository.findOne(id, {
+      relations: ['agency']
+    });
   }
   async remove(id: number): Promise<void> {
     await this.tourRepository.delete(id);
