@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { RenderModule } from 'nest-next';
+import { RenderModule, RenderService } from 'nest-next';
 import Next from 'next';
 import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -14,6 +14,10 @@ async function bootstrap() {
 
   const server = await NestFactory.create(AppModule);
   server.useGlobalPipes(new ValidationPipe());
+  const renderService = server.get(RenderService);
+  renderService.setErrorHandler(async (err, req, res) => {
+    res.send(err.response);
+  })
   const config = new DocumentBuilder()
     .setTitle('Touristic agencies catalogue')
     .setVersion('1.0')
