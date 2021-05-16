@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { CreateTourParams, UpdateTourParams } from './tour.dto';
 import { Tour } from './tour.entity';
 import { TourService } from './tour.service';
@@ -20,8 +20,8 @@ export class TourController {
   }
 
   @Get()
-  findAll(): Promise<Tour[]> {
-    return this.tourService.findAll();
+  findAll(@Query('category') category: string, @Query('direction') direction: string): Promise<Tour[]> {
+    return this.tourService.findAll(category, direction);
   }
 
   @Get(':id')

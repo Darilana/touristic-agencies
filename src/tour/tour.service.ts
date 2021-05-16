@@ -17,7 +17,7 @@ export class TourService {
     private directionService: DirectionService,
   ) {}
 
-  async findAll(): Promise<Tour[]> {
+  async findAll(category?: string, direction?: string): Promise<Tour[]> {
     return this.tourRepository.find();
   }
   async create(createTourParams: CreateTourParams): Promise<Tour> {

@@ -86,9 +86,13 @@ const AgencyList: NextPage<Props> = ({ agencies }) => {
   );
 };
 
-export async function getServerSideProps() {
+export async function getServerSideProps(ctx) {
   const props: Props = {
-    agencies: (await axios.get('http://localhost:3000/api/agency')).data,
+    agencies: (await axios.get('http://localhost:3000/api/agency', {
+      headers: {
+        Authorization: ctx.req.headers.authorization
+      }
+    })).data,
   };
 
   return { props };
