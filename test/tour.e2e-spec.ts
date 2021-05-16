@@ -6,6 +6,7 @@ import { Repository } from 'typeorm';
 import constants from '../src/constants';
 import { Tour } from '../src/tour/tour.entity';
 import { Agency } from '../src/agency/agency.entity';
+import { BasicAuthGuard } from '../src/auth/auth-basic.guard';
 
 describe('TourController (e2e)', () => {
   let app: INestApplication;
@@ -15,7 +16,11 @@ describe('TourController (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).compile();
+    }).overrideGuard(BasicAuthGuard)
+      .useValue({
+        canActivate: () => true,
+      })
+      .compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
