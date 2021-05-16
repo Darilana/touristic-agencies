@@ -12,10 +12,8 @@ $ npm install
 
 ```bash
 # development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
+$ docker compose -f docker-compose.deps.yaml up
+$ npm run dev
 
 # production mode
 $ npm run start:prod
