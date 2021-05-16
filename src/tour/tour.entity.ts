@@ -28,7 +28,7 @@ export class Tour {
   season: string;
 
   @ManyToOne(() => Agency, agency => agency.offices, {
-    nullable: false
+    nullable: false,
   })
   agency: Agency
 
