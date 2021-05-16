@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { CreateAgencyParams, UpdateAgencyParams } from './agency.dto';
 import { Agency } from './agency.entity';
 import { AgencyService } from './agency.service';
+import { BasicAuthGuard } from '../auth/auth-basic.guard';
 
+@UseGuards(BasicAuthGuard)
 @Controller('/api/agency')
 export class AgencyController {
   constructor(private readonly agencyService: AgencyService) {}

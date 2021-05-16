@@ -1,8 +1,10 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { CreateTourParams, UpdateTourParams } from './tour.dto';
 import { Tour } from './tour.entity';
 import { TourService } from './tour.service';
+import { BasicAuthGuard } from '../auth/auth-basic.guard';
 
+@UseGuards(BasicAuthGuard)
 @Controller('/api/tour')
 export class TourController {
   constructor(private readonly tourService: TourService) {}

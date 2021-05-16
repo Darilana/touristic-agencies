@@ -1,9 +1,11 @@
-import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
 import { CreateOfficeParams, UpdateOfficeParams } from './office.dto';
 import { Office } from './office.entity';
 import { OfficeService } from './office.service';
+import { BasicAuthGuard } from '../auth/auth-basic.guard';
 
 @Controller('/api/office')
+@UseGuards(BasicAuthGuard)
 export class OfficeController {
   constructor(private readonly officeService: OfficeService) {}
 

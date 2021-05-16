@@ -1,5 +1,9 @@
-import { Controller, Get, Render, Param } from '@nestjs/common';
+import { Controller, Get, Render, Param, UseGuards, UseFilters } from '@nestjs/common';
+import { UnauthorizedExceptionFilter } from '../auth/auth.exception.filter';
+import { BasicAuthGuard } from '../auth/auth-basic.guard';
 
+@UseGuards(BasicAuthGuard)
+@UseFilters(UnauthorizedExceptionFilter)
 @Controller('/')
 export class ViewController {
 
