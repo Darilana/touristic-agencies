@@ -1,5 +1,10 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import {
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
 
 export class CreateTourParams {
   @ApiProperty()
@@ -11,9 +16,6 @@ export class CreateTourParams {
   @ApiProperty()
   @IsString()
   description: string;
-  @ApiProperty()
-  @IsString()
-  season: string;
   @ApiProperty()
   @IsString()
   duration: string;
@@ -31,7 +33,7 @@ export class CreateTourParams {
 export class UpdateTourParams {
   @ApiProperty()
   @IsNumber()
-  id: number
+  id: number;
   @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
@@ -46,20 +48,24 @@ export class UpdateTourParams {
   description: string;
   @ApiProperty({ required: false })
   @IsString()
-  @IsOptional()
-  season: string;
-  @ApiProperty({ required: false })
-  @IsString()
   duration: string;
   @ApiProperty({ required: false })
   @IsNumber()
   @IsOptional()
   agencyId: number;
-  @ApiProperty({ type: () => CreateCategoryParams, isArray: true, required: false })
+  @ApiProperty({
+    type: () => CreateCategoryParams,
+    isArray: true,
+    required: false,
+  })
   @ValidateNested()
   @IsOptional()
   categories: CreateCategoryParams[];
-  @ApiProperty({ type: () => CreateDirectionParams, isArray: true, required: false })
+  @ApiProperty({
+    type: () => CreateDirectionParams,
+    isArray: true,
+    required: false,
+  })
   @ValidateNested()
   @IsOptional()
   directions: CreateDirectionParams[];

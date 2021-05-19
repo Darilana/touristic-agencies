@@ -9,14 +9,14 @@ export class CreateAgencyParams {
   @IsString()
   description: string;
   @ApiProperty()
-  @IsNumber()
-  phoneNumber: number;
+  @IsString()
+  phoneNumber: string;
 }
 
 export class UpdateAgencyParams {
   @ApiProperty()
   @IsNumber()
-  id: number
+  id: number;
   @ApiProperty({ required: false })
   @IsString()
   @IsOptional()
@@ -26,7 +26,7 @@ export class UpdateAgencyParams {
   @IsOptional()
   description: string;
   @ApiProperty({ required: false })
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  phoneNumber: number;
+  phoneNumber: string;
 }

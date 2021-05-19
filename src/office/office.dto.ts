@@ -6,8 +6,8 @@ export class CreateOfficeParams {
   @IsNumber()
   agencyId: number;
   @ApiProperty()
-  @IsNumber()
-  phoneNumber: number;
+  @IsString()
+  phoneNumber: string;
   @ApiProperty()
   @IsString()
   workingHours: string;
@@ -21,9 +21,9 @@ export class UpdateOfficeParams {
   @IsNumber()
   id: number;
   @ApiProperty({ required: false })
-  @IsNumber()
+  @IsString()
   @IsOptional()
-  phoneNumber: number;
+  phoneNumber: string;
   @ApiProperty({ required: false })
   @IsString()
   @IsOptional()

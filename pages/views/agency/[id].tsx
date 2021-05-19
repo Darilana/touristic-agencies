@@ -8,21 +8,39 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
+  makeStyles,
 } from '@material-ui/core';
-import AgencyDetailsForm from '../../components/AgencyDetailsForm';
-import OfficeForm from '../../components/OfficeForm';
+import OfficeStep from '../../components/office/OfficeStep';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import AgencyDetailsStep from '../../components/agency/AgencyDetailsStep';
+import SnackbarMessage from '../../components/common/SnackBarMessage';
 
-interface Props {
+interface AgencyDetailsProps {
   agency: Agency;
 }
 
-const AgencyDetails: NextPage<Props> = ({ agency }) => {
+const AgencyDetails: NextPage<AgencyDetailsProps> = ({ agency }) => {
+  const [snackbarState, setSnackbarState] = React.useState({
+    isOpen: false,
+    alertText: '',
+    alertSeverity: '',
+  });
+
+  const onSnackbarClose = () =>
+    setSnackbarState({ ...snackbarState, isOpen: false });
+
   return (
     <Box mb={4}>
-      <AgencyDetailsForm agency={agency} />
+      <Box mb={2} mt={4} display="flex" justifyContent="center">
+        <Typography variant="h5" color="textSecondary">
+          Деталі агенції
+        </Typography>
+      </Box>
+      <AgencyDetailsStep agency={agency} setSnackbarState={setSnackbarState} />
       <Box display="flex" justifyContent="center" mt={4}>
-        <Typography variant="h5" color="textSecondary">Офіси</Typography>
+        <Typography variant="h5" color="textSecondary">
+          Офіси
+        </Typography>
       </Box>
       <Box display="flex" justifyContent="center" mt={4}>
         <Accordion>
@@ -34,27 +52,33 @@ const AgencyDetails: NextPage<Props> = ({ agency }) => {
             <Typography>Додати офіс</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <OfficeForm agencyId={agency.id} />
+            <OfficeStep agencyId={agency.id} />
           </AccordionDetails>
         </Accordion>
       </Box>
       {agency.offices.map((office, index) => (
-        <OfficeForm key={office.id} office={office} index={index} />
+        <OfficeStep key={office.id} office={office} index={index} />
       ))}
+      <SnackbarMessage
+        isOpen={snackbarState.isOpen}
+        onClose={onSnackbarClose}
+        alertText={snackbarState.alertText}
+        alertSeverity={snackbarState.alertSeverity}
+      />
     </Box>
   );
 };
 
 export async function getServerSideProps(ctx: NextPageContext) {
-  console.log('EHLO');
-  console.log(ctx.req.headers.authorization);
-  const { id } = ctx.req.params;
-  const props: Props = {
-    agency: (await axios.get(`http://localhost:3000/api/agency/${id}`, {
-      headers: {
-        Authorization: ctx.req.headers.authorization
-      }
-    })).data,
+  const params = Reflect.get(ctx.req, 'params');
+  const props: AgencyDetailsProps = {
+    agency: (
+      await axios.get(`http://localhost:3000/api/agency/${params.id}`, {
+        headers: {
+          Authorization: ctx.req.headers.authorization,
+        },
+      })
+    ).data,
   };
 
   return { props };

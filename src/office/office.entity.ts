@@ -9,14 +9,14 @@ export class Office {
   @Column('text')
   address: string;
 
-  @Column('int')
-  phoneNumber: number;
+  @Column('varchar', { length: 15 })
+  phoneNumber: string;
 
   @Column('text')
   workingHours: string;
 
-  @ManyToOne(() => Agency, agency => agency.offices, {
-    nullable: false
+  @ManyToOne(() => Agency, (agency) => agency.offices, {
+    nullable: false,
   })
-  agency: Agency
+  agency: Agency;
 }

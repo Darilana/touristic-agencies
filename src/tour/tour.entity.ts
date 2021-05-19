@@ -1,4 +1,11 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, ManyToMany, JoinTable } from 'typeorm';
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
+} from 'typeorm';
 import { Agency } from '../agency/agency.entity';
 import { Direction } from '../direction/direction.entity';
 import { Category } from '../category/category.entity';
@@ -12,7 +19,7 @@ export class Tour {
   name: string;
 
   @Column('text', {
-    default: ''
+    default: '',
   })
   description: string;
 
@@ -22,26 +29,21 @@ export class Tour {
   @Column('text')
   duration: string;
 
-  @Column('text', {
-    default: null
-  })
-  season: string;
-
-  @ManyToOne(() => Agency, agency => agency.offices, {
+  @ManyToOne(() => Agency, (agency) => agency.offices, {
     nullable: false,
   })
-  agency: Agency
+  agency: Agency;
 
   @ManyToMany(() => Direction, {
     eager: true,
-    cascade: true
+    cascade: true,
   })
   @JoinTable()
   directions: Direction[];
 
   @ManyToMany(() => Category, {
     eager: true,
-    cascade: true
+    cascade: true,
   })
   @JoinTable()
   categories: Category[];

@@ -3,6 +3,11 @@ import axios from 'axios';
 import { Tour } from '../../../src/tour/tour.entity';
 import { NextPage } from 'next';
 import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  Box,
+  IconButton,
   Link,
   makeStyles,
   Table,
@@ -12,8 +17,17 @@ import {
   TableHead,
   TableRow,
   TableSortLabel,
+  Typography,
 } from '@material-ui/core';
 import moment from 'moment';
+import DeleteIcon from '@material-ui/icons/Delete';
+import { useRouter } from 'next/router';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import TourDetailsStep from '../../components/tour/TourDetailsStep';
+import SnackbarMessage from '../../components/common/SnackBarMessage';
+import flatten from 'lodash/flatten';
+import uniqBy from 'lodash/uniqBy';
+import { TourFilter } from '../../components/tour/TourFilter';
 
 interface Props {
   tours: Tour[];
@@ -27,33 +41,116 @@ const useStyles = makeStyles({
   table: {
     width: 800,
   },
+  accordion: {
+    width: 800,
+  },
 });
 
 const TourList: NextPage<Props> = ({ tours }) => {
+  const [filteredTours, setFilteredTours] = React.useState(tours);
+  const [order, setOrder] = React.useState<'asc' | 'desc'>('asc');
+  const [orderBy, setOrderBy] = React.useState('price');
+  const [snackbarState, setSnackbarState] = React.useState({
+    isOpen: false,
+    alertText: '',
+    alertSeverity: '',
+  });
+
   const classes = useStyles();
 
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
+  const onSnackbarClose = () =>
+    setSnackbarState({ ...snackbarState, isOpen: false });
 
-  const handleRequestSort = (event, property) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
+  const getAutocompleteOptions = (options: string) =>
+    uniqBy(
+      flatten(tours.map((tour) => tour[options])),
+      (option) => option.name,
+    );
+
+  const directionsOptions = getAutocompleteOptions('directions');
+
+  const categoriesOptions = getAutocompleteOptions('categories');
+
+  const router = useRouter();
+
+  const refreshData = () => router.replace(router.asPath);
+
+  const deleteTour = (tour) => {
+    axios.delete(`http://localhost:3000/api/tour/${tour.id}`);
+    refreshData();
+  };
+
+  const handleSort = (event, property) => {
+    setOrder(order === 'asc' ? 'desc' : 'asc');
     setOrderBy(property);
+
+    const compareFn = (i, j) => {
+      if (i[property] < j[property]) {
+        return order === 'asc' ? -1 : 1;
+      } else {
+        if (i[property] > j[property]) {
+          return order === 'asc' ? 1 : -1;
+        } else {
+          return 0;
+        }
+      }
+    };
+
+    const sortedItems = filteredTours.sort(compareFn);
+    setFilteredTours(sortedItems);
   };
 
   const createSortHandler = (property) => (event) => {
-    handleRequestSort(event, property);
+    handleSort(event, property);
   };
 
   return (
-    <div>
-      <h1>TourList</h1>
+    <Box display="flex" flexDirection="column" alignItems="center">
+      <Box display="flex" justifyContent="center" mb={4} mt={4}>
+        <Typography variant="h4" color="textSecondary">
+          Список турів
+        </Typography>
+      </Box>
+      <Box display="flex" justifyContent="center" mb={4} mt={4}>
+        <Accordion className={classes.accordion}>
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon />}
+            aria-controls="panel1a-content"
+            id="panel1a-header"
+          >
+            <Typography>Додати тур</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <TourDetailsStep setSnackbarState={setSnackbarState} />
+          </AccordionDetails>
+        </Accordion>
+      </Box>
+      <Box
+        mb={4}
+        mt={4}
+        display="flex"
+        justifyContent="space-between"
+        width={800}
+      >
+        <TourFilter
+          options={directionsOptions}
+          label="Напрямки"
+          fieldType="direction"
+          onChange={setFilteredTours}
+        />
+        <TourFilter
+          options={categoriesOptions}
+          label="Категорії"
+          fieldType="category"
+          onChange={setFilteredTours}
+        />
+      </Box>
       <TableContainer className={classes.tableContainer}>
         <Table className={classes.table} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>Назва</TableCell>
-              <TableCell>
+              <TableCell component="th">Назва</TableCell>
+              <TableCell component="th">
                 <TableSortLabel
                   active={orderBy === 'price'}
                   direction={orderBy === 'price' ? order : 'asc'}
@@ -62,39 +159,61 @@ const TourList: NextPage<Props> = ({ tours }) => {
                   Ціна (грн)
                 </TableSortLabel>
               </TableCell>
-              <TableCell>Тривалість (дні)</TableCell>
-              <TableCell>Напрямок</TableCell>
-              <TableCell>Категорія</TableCell>
-              <TableCell align="right" />
+              <TableCell component="th">
+                <TableSortLabel
+                  active={orderBy === 'duration'}
+                  direction={orderBy === 'duration' ? order : 'asc'}
+                  onClick={createSortHandler('duration')}
+                >
+                  Тривалість (дні)
+                </TableSortLabel>
+              </TableCell>
+              <TableCell component="th">Напрямок</TableCell>
+              <TableCell component="th">Категорія</TableCell>
+              <TableCell align="right" component="th" />
+              <TableCell align="right" component="th" />
             </TableRow>
           </TableHead>
           <TableBody>
-            {tours.map((tour) => (
+            {filteredTours.map((tour) => (
               <TableRow key={tour.name}>
-                <TableCell component="th" scope="row">
-                  {tour.name}
-                </TableCell>
-                <TableCell component="th" scope="row">
-                  {tour.price.toFixed(2)}
-                </TableCell>
-                <TableCell component="th" scope="row">
+                <TableCell scope="row">{tour.name}</TableCell>
+                <TableCell scope="row">{tour.price.toFixed(2)}</TableCell>
+                <TableCell scope="row">
                   {moment.duration(tour.duration).asDays()}
                 </TableCell>
-                <TableCell component="th" scope="row">
-                  {tour.directions.map((direction) => direction.name).join(", ")}
+                <TableCell scope="row">
+                  {tour.directions
+                    .map((direction) => direction.name)
+                    .join(', ')}
                 </TableCell>
-                <TableCell component="th" scope="row">
-                  {tour.categories.map((category) => category.name).join(", ")}
+                <TableCell scope="row">
+                  {tour.categories.map((category) => category.name).join(', ')}
                 </TableCell>
                 <TableCell>
                   <Link href={`tour/${tour.id}`}>Детальніше</Link>
+                </TableCell>
+                <TableCell>
+                  <IconButton
+                    color="secondary"
+                    aria-label="delete"
+                    onClick={() => deleteTour(tour)}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
                 </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-    </div>
+      <SnackbarMessage
+        isOpen={snackbarState.isOpen}
+        onClose={onSnackbarClose}
+        alertText={snackbarState.alertText}
+        alertSeverity={snackbarState.alertSeverity}
+      />
+    </Box>
   );
 };
 

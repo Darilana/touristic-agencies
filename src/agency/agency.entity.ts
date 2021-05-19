@@ -10,21 +10,21 @@ export class Agency {
   name: string;
 
   @Column('text', {
-    default: ''
+    default: '',
   })
   description: string;
 
-  @Column('int')
-  phoneNumber: number;
+  @Column('varchar', { length: 15 })
+  phoneNumber: string;
 
   @Column('enum', {
     default: 'ACTIVE',
-    enum: ['ACTIVE', 'INACTIVE']
+    enum: ['ACTIVE', 'INACTIVE'],
   })
   status: 'ACTIVE' | 'INACTIVE';
 
-  @OneToMany(() => Office, office => office.agency, {
-    eager: true
+  @OneToMany(() => Office, (office) => office.agency, {
+    eager: true,
   })
   offices: Office[];
 }

@@ -7,8 +7,12 @@ import {
   Box,
   Toolbar,
   Typography,
-  Button,
+  Link,
   IconButton,
+  Menu,
+  MenuItem,
+  withStyles,
+  MenuProps,
 } from '@material-ui/core';
 import ContactsIcon from '@material-ui/icons/Contacts';
 
@@ -38,8 +42,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const StyledMenu = withStyles({
+  paper: {
+    border: '1px solid #d3d4d5',
+  },
+})((props: MenuProps) => (
+  <Menu
+    elevation={0}
+    getContentAnchorEl={null}
+    anchorOrigin={{
+      vertical: 'bottom',
+      horizontal: 'center',
+    }}
+    transformOrigin={{
+      vertical: 'top',
+      horizontal: 'center',
+    }}
+    {...props}
+  />
+));
+
 const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   const classes = useStyles();
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [anchorEl, setAnchorEl] = React.useState(null);
+
+  const handleMenuClick = (event) => {
+    setIsMenuOpen(!isMenuOpen);
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setIsMenuOpen(false);
+  };
 
   return (
     <div className={classes.root}>
@@ -52,13 +88,31 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
                 className={classes.iconButton}
                 color="inherit"
                 aria-label="menu"
+                onClick={handleMenuClick}
               >
                 <MenuIcon />
               </IconButton>
+              <StyledMenu
+                id="menu"
+                anchorEl={anchorEl}
+                keepMounted
+                open={isMenuOpen}
+                onClose={handleMenuClose}
+              >
+                <MenuItem onClick={handleMenuClose}>
+                  <Link underline="none" color="textPrimary" href={'/agency'}>
+                    Агенції
+                  </Link>
+                </MenuItem>
+                <MenuItem onClick={handleMenuClose}>
+                  <Link underline="none" color="textPrimary" href={'/tour'}>
+                    Тури
+                  </Link>
+                </MenuItem>
+              </StyledMenu>
               <Typography variant="h6" className={classes.title}>
                 Travel admin
               </Typography>
-              <Button color="inherit">Login</Button>
             </Toolbar>
           </AppBar>
         </div>
