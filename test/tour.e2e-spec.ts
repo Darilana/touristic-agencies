@@ -20,7 +20,8 @@ describe('TourController (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).overrideGuard(BasicAuthGuard)
+    })
+      .overrideGuard(BasicAuthGuard)
       .useValue({
         canActivate: () => true,
       })
@@ -39,7 +40,7 @@ describe('TourController (e2e)', () => {
     await agencyRepository.delete({});
     await categoryRepository.delete({});
     await directionRepository.delete({});
-  })
+  });
 
   it('should return list of tours', async () => {
     const agency = await agencyRepository.save({
@@ -49,28 +50,28 @@ describe('TourController (e2e)', () => {
     });
     const tour = await tourRepository.save({
       name: 'TEST_NAME',
-      price: 10.00,
+      price: 10.0,
       description: 'TEST_DESCRIPTION',
-      season: 'TEST',
       duration: 'P1W',
       agency: {
-        id: agency.id
-      }
+        id: agency.id,
+      },
     });
     return request(app.getHttpServer())
       .get('/api/tour')
       .expect(200)
-      .expect(response => {
-        expect(response.body).toEqual([{
-          name: tour.name,
-          price: tour.price,
-          description: tour.description,
-          season: tour.season,
-          duration: tour.duration,
-          id: tour.id,
-          categories: [],
-          directions: []
-        }])
+      .expect((response) => {
+        expect(response.body).toEqual([
+          {
+            name: tour.name,
+            price: tour.price,
+            description: tour.description,
+            duration: tour.duration,
+            id: tour.id,
+            categories: [],
+            directions: [],
+          },
+        ]);
       });
   });
 
@@ -82,23 +83,21 @@ describe('TourController (e2e)', () => {
     });
     const tour = await tourRepository.save({
       name: 'TEST_NAME',
-      price: 10.00,
+      price: 10.0,
       description: 'TEST_DESCRIPTION',
-      season: 'TEST',
       duration: 'P1W',
       agency: {
-        id: agency.id
-      }
+        id: agency.id,
+      },
     });
     return request(app.getHttpServer())
       .get(`/api/tour/${tour.id}`)
       .expect(200)
-      .expect(response => {
+      .expect((response) => {
         expect(response.body).toEqual({
           name: tour.name,
           price: tour.price,
           description: tour.description,
-          season: tour.season,
           duration: tour.duration,
           id: tour.id,
           categories: [],
@@ -109,9 +108,9 @@ describe('TourController (e2e)', () => {
             name: agency.name,
             offices: [],
             phoneNumber: agency.phoneNumber,
-            status: agency.status
-          }
-        })
+            status: agency.status,
+          },
+        });
       });
   });
 
@@ -123,13 +122,12 @@ describe('TourController (e2e)', () => {
     });
     const tour = await tourRepository.save({
       name: 'TEST_NAME',
-      price: 10.00,
+      price: 10.0,
       description: 'TEST_DESCRIPTION',
-      season: 'TEST',
       duration: 'P1W',
       agency: {
-        id: agency.id
-      }
+        id: agency.id,
+      },
     });
     await request(app.getHttpServer())
       .delete(`/api/tour/${tour.id}`)
@@ -138,8 +136,8 @@ describe('TourController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/api/tour')
       .expect(200)
-      .expect(response => {
-        expect(response.body).toEqual([])
+      .expect((response) => {
+        expect(response.body).toEqual([]);
       });
   });
 
@@ -153,21 +151,19 @@ describe('TourController (e2e)', () => {
       .post(`/api/tour`)
       .send({
         name: 'TEST_NAME',
-        price: 10.00,
+        price: 10.0,
         description: 'TEST_DESCRIPTION',
-        season: 'TEST',
         duration: 'P1W',
-        agencyId: agency.id
+        agencyId: agency.id,
       })
       .expect(201)
-      .expect(response => {
+      .expect((response) => {
         expect(response.body).toMatchObject({
           name: 'TEST_NAME',
-          price: 10.00,
+          price: 10.0,
           description: 'TEST_DESCRIPTION',
-          season: 'TEST',
           duration: 'P1W',
-        })
+        });
       });
   });
 
@@ -181,23 +177,21 @@ describe('TourController (e2e)', () => {
       .post(`/api/tour`)
       .send({
         name: 'TEST_NAME',
-        price: 10.00,
+        price: 10.0,
         description: 'TEST_DESCRIPTION',
-        season: 'TEST',
         duration: 'P1W',
         agencyId: agency.id,
-        categories: [{ name: 'TEST1' }, { name: 'TEST2' }]
+        categories: [{ name: 'TEST1' }, { name: 'TEST2' }],
       })
       .expect(201)
-      .expect(response => {
+      .expect((response) => {
         expect(response.body).toMatchObject({
           name: 'TEST_NAME',
-          price: 10.00,
+          price: 10.0,
           description: 'TEST_DESCRIPTION',
-          season: 'TEST',
           duration: 'P1W',
-          categories: [{ name: 'TEST1' }, { name: 'TEST2' }]
-        })
+          categories: [{ name: 'TEST1' }, { name: 'TEST2' }],
+        });
       });
   });
 
@@ -211,23 +205,21 @@ describe('TourController (e2e)', () => {
       .post(`/api/tour`)
       .send({
         name: 'TEST_NAME',
-        price: 10.00,
+        price: 10.0,
         description: 'TEST_DESCRIPTION',
-        season: 'TEST',
         duration: 'P1W',
         agencyId: agency.id,
-        directions: [{ name: 'TEST1' }, { name: 'TEST2' }]
+        directions: [{ name: 'TEST1' }, { name: 'TEST2' }],
       })
       .expect(201)
-      .expect(response => {
+      .expect((response) => {
         expect(response.body).toMatchObject({
           name: 'TEST_NAME',
-          price: 10.00,
+          price: 10.0,
           description: 'TEST_DESCRIPTION',
-          season: 'TEST',
           duration: 'P1W',
-          directions: [{ name: 'TEST1' }, { name: 'TEST2' }]
-        })
+          directions: [{ name: 'TEST1' }, { name: 'TEST2' }],
+        });
       });
   });
 
@@ -239,31 +231,29 @@ describe('TourController (e2e)', () => {
     });
     const tour = await tourRepository.save({
       name: 'TEST_NAME',
-      price: 10.00,
+      price: 10.0,
       description: 'TEST_DESCRIPTION',
-      season: 'TEST',
       duration: 'P1W',
       agency: {
-        id: agency.id
-      }
+        id: agency.id,
+      },
     });
     return request(app.getHttpServer())
       .put(`/api/tour/${tour.id}`)
       .send({
-        name: 'TEST_NAME_2'
+        name: 'TEST_NAME_2',
       })
       .expect(200)
-      .expect(response => {
+      .expect((response) => {
         expect(response.body).toEqual({
           name: 'TEST_NAME_2',
           price: tour.price,
           description: tour.description,
-          season: tour.season,
           duration: tour.duration,
           id: tour.id,
           categories: [],
-          directions: []
-        })
+          directions: [],
+        });
       });
   });
 
@@ -275,48 +265,45 @@ describe('TourController (e2e)', () => {
     });
     const tour1 = await tourRepository.save({
       name: 'TEST_NAME_1',
-      price: 10.00,
+      price: 10.0,
       description: 'TEST_DESCRIPTION',
-      season: 'TEST',
       duration: 'P1W',
       agency: {
-        id: agency.id
+        id: agency.id,
       },
-      categories: [
-        { name: 'TEST_CATEGORY_1' }
-      ]
+      categories: [{ name: 'TEST_CATEGORY_1' }],
     });
 
     const tour2 = await tourRepository.save({
       name: 'TEST_NAME_2',
-      price: 10.00,
+      price: 10.0,
       description: 'TEST_DESCRIPTION',
-      season: 'TEST',
       duration: 'P1W',
       agency: {
-        id: agency.id
+        id: agency.id,
       },
-      categories: [
-        { name: 'TEST_CATEGORY_2' }
-      ]
+      categories: [{ name: 'TEST_CATEGORY_2' }],
     });
     return request(app.getHttpServer())
       .get('/api/tour?category=TEST_CATEGORY_2')
       .expect(200)
-      .expect(response => {
-        expect(response.body).toHaveLength(1)
-        expect(response.body).toMatchObject([{
-          name: tour2.name,
-          price: tour2.price,
-          description: tour2.description,
-          season: tour2.season,
-          duration: tour2.duration,
-          id: tour2.id,
-          categories: [{
-            name: 'TEST_CATEGORY_2'
-          }],
-          directions: []
-        }])
+      .expect((response) => {
+        expect(response.body).toHaveLength(1);
+        expect(response.body).toMatchObject([
+          {
+            name: tour2.name,
+            price: tour2.price,
+            description: tour2.description,
+            duration: tour2.duration,
+            id: tour2.id,
+            categories: [
+              {
+                name: 'TEST_CATEGORY_2',
+              },
+            ],
+            directions: [],
+          },
+        ]);
       });
   });
 
@@ -328,48 +315,45 @@ describe('TourController (e2e)', () => {
     });
     const tour1 = await tourRepository.save({
       name: 'TEST_NAME_1',
-      price: 10.00,
+      price: 10.0,
       description: 'TEST_DESCRIPTION',
-      season: 'TEST',
       duration: 'P1W',
       agency: {
-        id: agency.id
+        id: agency.id,
       },
-      directions: [
-        { name: 'TEST_DIRECTION_1' }
-      ]
+      directions: [{ name: 'TEST_DIRECTION_1' }],
     });
 
     const tour2 = await tourRepository.save({
       name: 'TEST_NAME_2',
-      price: 10.00,
+      price: 10.0,
       description: 'TEST_DESCRIPTION',
-      season: 'TEST',
       duration: 'P1W',
       agency: {
-        id: agency.id
+        id: agency.id,
       },
-      directions: [
-        { name: 'TEST_DIRECTION_2' }
-      ]
+      directions: [{ name: 'TEST_DIRECTION_2' }],
     });
     return request(app.getHttpServer())
       .get('/api/tour?direction=TEST_DIRECTION_2')
       .expect(200)
-      .expect(response => {
-        expect(response.body).toHaveLength(1)
-        expect(response.body).toMatchObject([{
-          name: tour2.name,
-          price: tour2.price,
-          description: tour2.description,
-          season: tour2.season,
-          duration: tour2.duration,
-          id: tour2.id,
-          directions: [{
-            name: 'TEST_DIRECTION_2'
-          }],
-          categories: []
-        }])
+      .expect((response) => {
+        expect(response.body).toHaveLength(1);
+        expect(response.body).toMatchObject([
+          {
+            name: tour2.name,
+            price: tour2.price,
+            description: tour2.description,
+            duration: tour2.duration,
+            id: tour2.id,
+            directions: [
+              {
+                name: 'TEST_DIRECTION_2',
+              },
+            ],
+            categories: [],
+          },
+        ]);
       });
   });
 });

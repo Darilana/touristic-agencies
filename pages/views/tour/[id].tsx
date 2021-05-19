@@ -2,14 +2,11 @@ import * as React from 'react';
 import axios from 'axios';
 import { NextPage, NextPageContext } from 'next';
 import { Tour } from '../../../src/tour/tour.entity';
-import TourDetailsForm from '../../components/TourDetailsForm';
+import TourDetailsStep from '../../components/tour/TourDetailsStep';
 import { Box, Typography } from '@material-ui/core';
-import SnackbarMessage from '../../components/SnackBarMessage';
-import { Formik } from 'formik';
-import { useRouter } from 'next/router';
-import moment from 'moment';
+import SnackbarMessage from '../../components/common/SnackBarMessage';
 
-interface Props {
+interface TourDetailsProps {
   tour: Tour;
 }
 
@@ -19,61 +16,6 @@ const TourDetails: NextPage<Props> = ({ tour }) => {
     alertText: '',
     alertSeverity: '',
   });
-
-  const initialValues = {
-    name: tour?.name || '',
-    description: tour?.description || '',
-    duration: moment.duration(tour?.duration).asDays() || 0,
-    price: tour?.price || undefined,
-    directions: tour?.directions.map((direction) => direction.name) || [],
-    categories: tour?.categories.map((category) => category.name) || [],
-  };
-
-  const router = useRouter();
-
-  const refreshData = () => router.replace(router.asPath);
-
-  const onSubmit = (values) => {
-    const directions = values.directions.map((direction) => ({
-      name: direction,
-    }));
-    const categories = values.categories.map((category) => ({
-      name: category,
-    }));
-    const duration = moment.duration(values.duration, 'days').toISOString();
-
-    const operation = tour
-      ? axios.put(`http://localhost:3000/api/tour/${tour.id}`, {
-          ...values,
-          id: tour.id,
-          directions,
-          categories,
-          duration,
-        })
-      : axios.post(`http://localhost:3000/api/tour`, {
-          ...values,
-          directions,
-          categories,
-          duration,
-        });
-
-    operation
-      .then(() => {
-        setSnackbarState({
-          isOpen: true,
-          alertText: 'Зміни було успішно збережено',
-          alertSeverity: 'success',
-        });
-        refreshData();
-      })
-      .catch((e) => {
-        setSnackbarState({
-          isOpen: true,
-          alertText: 'Сталася помилка',
-          alertSeverity: 'error',
-        });
-      });
-  };
 
   const onSnackbarClose = () =>
     setSnackbarState({ ...snackbarState, isOpen: false });
@@ -85,9 +27,7 @@ const TourDetails: NextPage<Props> = ({ tour }) => {
           Деталі туру
         </Typography>
       </Box>
-      <Formik initialValues={initialValues} onSubmit={onSubmit}>
-        <TourDetailsForm tour={tour} />
-      </Formik>
+      <TourDetailsStep tour={tour} setSnackbarState={setSnackbarState} />
       <SnackbarMessage
         isOpen={snackbarState.isOpen}
         onClose={onSnackbarClose}
@@ -99,11 +39,10 @@ const TourDetails: NextPage<Props> = ({ tour }) => {
 };
 
 export async function getServerSideProps(ctx: NextPageContext) {
-  const { id } = ctx.req.params;
-  console.log(ctx.req.headers.authorization);
-  const props: Props = {
+  const params = Reflect.get(ctx.req, 'params');
+  const props: TourDetailsProps = {
     tour: (
-      await axios.get(`http://localhost:3000/api/tour/${id}`, {
+      await axios.get(`http://localhost:3000/api/tour/${params.id}`, {
         headers: {
           Authorization: ctx.req.headers.authorization,
         },

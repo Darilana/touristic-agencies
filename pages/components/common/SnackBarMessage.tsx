@@ -2,7 +2,7 @@ import { Snackbar } from '@material-ui/core';
 import * as React from 'react';
 import MuiAlert from '@material-ui/lab/Alert';
 
-interface Props {
+interface SnackbarMessageProps {
   isOpen: boolean;
   onClose: () => void;
   alertText: string;
@@ -11,7 +11,7 @@ interface Props {
 
 const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
 
-const SnackbarMessage: React.FC<Props> = ({
+const SnackbarMessage: React.FC<SnackbarMessageProps> = ({
   isOpen,
   onClose,
   alertText,
