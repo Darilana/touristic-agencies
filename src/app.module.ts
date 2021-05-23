@@ -8,13 +8,14 @@ import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
 import { AssetModule } from './asset/asset.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
-import path from "path";
+import path from 'path';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
     ServeStaticModule.forRoot({
       rootPath: path.join(__dirname, '..', 'uploads'),
-      serveRoot: '/static'
+      serveRoot: '/static',
     }),
     ConfigModule.forRoot(),
     AgencyModule,
@@ -24,6 +25,7 @@ import path from "path";
     ViewModule,
     AuthModule,
     AssetModule,
+    StatisticsModule,
   ],
 })
 export class AppModule {}
