@@ -21,6 +21,7 @@ export interface TourDetailsStepValues {
   price: number;
   directions: string[];
   categories: string[];
+  image: string;
 }
 
 const TourDetailsStep: NextPage<Props> = ({ tour, setSnackbarState }) => {
@@ -31,6 +32,7 @@ const TourDetailsStep: NextPage<Props> = ({ tour, setSnackbarState }) => {
     price: tour?.price || 0,
     directions: tour?.directions.map((direction) => direction.name) || [],
     categories: tour?.categories.map((category) => category.name) || [],
+    image: tour?.image || ''
   };
 
   const router = useRouter();
