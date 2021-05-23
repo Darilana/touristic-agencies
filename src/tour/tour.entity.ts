@@ -29,6 +29,11 @@ export class Tour {
   @Column('text')
   duration: string;
 
+  @Column('text', {
+    nullable: true
+  })
+  image: string;
+
   @ManyToOne(() => Agency, (agency) => agency.offices, {
     nullable: false,
   })

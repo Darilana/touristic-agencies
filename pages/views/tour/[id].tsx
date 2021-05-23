@@ -10,7 +10,7 @@ interface TourDetailsProps {
   tour: Tour;
 }
 
-const TourDetails: NextPage<Props> = ({ tour }) => {
+const TourDetails: NextPage<TourDetailsProps> = ({ tour }) => {
   const [snackbarState, setSnackbarState] = React.useState({
     isOpen: false,
     alertText: '',

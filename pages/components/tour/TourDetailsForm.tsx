@@ -7,13 +7,15 @@ import ChipInput from 'material-ui-chip-input';
 import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
 import { TourDetailsStepValues } from './TourDetailsStep';
+import { DropzoneArea } from 'material-ui-dropzone';
+import axios from 'axios';
 
 interface Props {
   tour?: Tour;
 }
 
 const TourDetailsForm: React.FC<Props> = ({ tour }) => {
-  const { values, isValid, errors, initialValues, dirty, touched } =
+  const { values, isValid, errors, initialValues, dirty, touched, setFieldValue } =
     useFormikContext<TourDetailsStepValues>();
   const isFormDirty = !isEqual(initialValues, values);
 
@@ -27,10 +29,35 @@ const TourDetailsForm: React.FC<Props> = ({ tour }) => {
     }
   };
 
+  const handleFileUpload = ([file]) => {
+    if (!file) {
+      setFieldValue('image', null);
+      return;
+    }
+    const formData = new FormData();
+    formData.append('image', file);
+    return axios.post('http://localhost:3000/api/asset/upload-image', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    }).then((response) => {
+      setFieldValue('image', response.data.filename);
+    });
+  };
+
+  const initialFile = values.image
+      ? `http://localhost:3000/static/${values.image}`
+      : '';
+
   return (
     <Form>
       <Box display="flex" justifyContent="center">
         <Box display="flex" flexDirection="column" width={600}>
+          {values.image && (
+              <Box mb={2}>
+                <img height={200} src={initialFile} />
+              </Box>
+          )}
           <Box mb={2}>
             <Typography variant="h6">Назва</Typography>
             <Field
@@ -156,6 +183,15 @@ const TourDetailsForm: React.FC<Props> = ({ tour }) => {
                   ) : null}
                 </>
               )}
+            />
+          </Box>
+          <Box mb={2}>
+            <Typography variant="h6">Зображення</Typography>
+            <DropzoneArea
+                onChange={handleFileUpload}
+                filesLimit={1}
+                acceptedFiles={['image/jpeg', 'image/png']}
+                initialFiles={initialFile ? [initialFile] : []}
             />
           </Box>
           <Button

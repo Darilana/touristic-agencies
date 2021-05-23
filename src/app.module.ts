@@ -6,9 +6,16 @@ import { RenderModule } from 'nest-next';
 import { ViewModule } from './view/view.module';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { AssetModule } from './asset/asset.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import path from "path";
 
 @Module({
   imports: [
+    ServeStaticModule.forRoot({
+      rootPath: path.join(__dirname, '..', 'uploads'),
+      serveRoot: '/static'
+    }),
     ConfigModule.forRoot(),
     AgencyModule,
     OfficeModule,
@@ -16,6 +23,7 @@ import { AuthModule } from './auth/auth.module';
     RenderModule,
     ViewModule,
     AuthModule,
+    AssetModule,
   ],
 })
 export class AppModule {}
