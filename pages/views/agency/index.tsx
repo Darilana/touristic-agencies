@@ -63,7 +63,7 @@ const AgencyList: NextPage<Props> = ({ agencies }) => {
   };
 
   return (
-    <div>
+    <Box Box display="flex" flexDirection="column" alignItems="center">
       <Box display="flex" justifyContent="center" mb={4} mt={4}>
         <Typography variant="h4" color="textSecondary">
           Список агенцій
@@ -121,7 +121,7 @@ const AgencyList: NextPage<Props> = ({ agencies }) => {
         alertText={snackbarState.alertText}
         alertSeverity={snackbarState.alertSeverity}
       />
-    </div>
+    </Box>
   );
 };
 
