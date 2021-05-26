@@ -28,9 +28,12 @@ import SnackbarMessage from '../../components/common/SnackBarMessage';
 import flatten from 'lodash/flatten';
 import uniqBy from 'lodash/uniqBy';
 import { TourFilter } from '../../components/tour/TourFilter';
+import isEmpty from 'lodash/isEmpty';
+import { Agency } from '../../../src/agency/agency.entity';
 
-interface Props {
+interface TourListProps {
   tours: Tour[];
+  agencies: Agency[];
 }
 
 const useStyles = makeStyles({
@@ -46,8 +49,9 @@ const useStyles = makeStyles({
   },
 });
 
-const TourList: NextPage<Props> = ({ tours }) => {
+const TourList: NextPage<TourListProps> = ({ tours, agencies }) => {
   const [filteredTours, setFilteredTours] = React.useState(tours);
+  const [requestParams, setRequestParams] = React.useState({});
   const [order, setOrder] = React.useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = React.useState('price');
   const [snackbarState, setSnackbarState] = React.useState({
@@ -63,7 +67,7 @@ const TourList: NextPage<Props> = ({ tours }) => {
 
   const getAutocompleteOptions = (options: string) =>
     uniqBy(
-      flatten(tours.map((tour) => tour[options])),
+      flatten(filteredTours.map((tour) => tour[options])),
       (option) => option.name,
     );
 
@@ -104,6 +108,11 @@ const TourList: NextPage<Props> = ({ tours }) => {
     handleSort(event, property);
   };
 
+  const onFilterChange = (toursToDisplay: Tour[], params) => {
+    setFilteredTours(toursToDisplay);
+    setRequestParams({ ...requestParams, ...params });
+  };
+
   return (
     <Box display="flex" flexDirection="column" alignItems="center">
       <Box display="flex" justifyContent="center" mb={4} mt={4}>
@@ -121,92 +130,103 @@ const TourList: NextPage<Props> = ({ tours }) => {
             <Typography>Додати тур</Typography>
           </AccordionSummary>
           <AccordionDetails>
-            <TourDetailsStep setSnackbarState={setSnackbarState} />
+            <TourDetailsStep
+              setSnackbarState={setSnackbarState}
+              agencies={agencies}
+            />
           </AccordionDetails>
         </Accordion>
       </Box>
-      <Box
-        mb={4}
-        mt={4}
-        display="flex"
-        justifyContent="space-between"
-        width={800}
-      >
-        <TourFilter
-          options={directionsOptions}
-          label="Напрямки"
-          fieldType="direction"
-          onChange={setFilteredTours}
-        />
-        <TourFilter
-          options={categoriesOptions}
-          label="Категорії"
-          fieldType="category"
-          onChange={setFilteredTours}
-        />
-      </Box>
-      <TableContainer className={classes.tableContainer}>
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell component="th">Назва</TableCell>
-              <TableCell component="th">
-                <TableSortLabel
-                  active={orderBy === 'price'}
-                  direction={orderBy === 'price' ? order : 'asc'}
-                  onClick={createSortHandler('price')}
-                >
-                  Ціна (грн)
-                </TableSortLabel>
-              </TableCell>
-              <TableCell component="th">
-                <TableSortLabel
-                  active={orderBy === 'duration'}
-                  direction={orderBy === 'duration' ? order : 'asc'}
-                  onClick={createSortHandler('duration')}
-                >
-                  Тривалість (дні)
-                </TableSortLabel>
-              </TableCell>
-              <TableCell component="th">Напрямок</TableCell>
-              <TableCell component="th">Категорія</TableCell>
-              <TableCell align="right" component="th" />
-              <TableCell align="right" component="th" />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {filteredTours.map((tour) => (
-              <TableRow key={tour.name}>
-                <TableCell scope="row">{tour.name}</TableCell>
-                <TableCell scope="row">{tour.price.toFixed(2)}</TableCell>
-                <TableCell scope="row">
-                  {moment.duration(tour.duration).asDays()}
-                </TableCell>
-                <TableCell scope="row">
-                  {tour.directions
-                    .map((direction) => direction.name)
-                    .join(', ')}
-                </TableCell>
-                <TableCell scope="row">
-                  {tour.categories.map((category) => category.name).join(', ')}
-                </TableCell>
-                <TableCell>
-                  <Link href={`tour/${tour.id}`}>Детальніше</Link>
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    color="secondary"
-                    aria-label="delete"
-                    onClick={() => deleteTour(tour)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {!isEmpty(tours) && (
+        <Box display="flex" flexDirection="column" alignItems="center">
+          <Box
+            mb={4}
+            mt={4}
+            display="flex"
+            justifyContent="space-between"
+            width={800}
+          >
+            <TourFilter
+              options={directionsOptions}
+              label="Напрямки"
+              fieldType="direction"
+              requestParams={requestParams}
+              onChange={onFilterChange}
+            />
+            <TourFilter
+              options={categoriesOptions}
+              label="Категорії"
+              fieldType="category"
+              requestParams={requestParams}
+              onChange={onFilterChange}
+            />
+          </Box>
+          <TableContainer className={classes.tableContainer}>
+            <Table className={classes.table} aria-label="simple table">
+              <TableHead>
+                <TableRow>
+                  <TableCell component="th">Назва</TableCell>
+                  <TableCell component="th">
+                    <TableSortLabel
+                      active={orderBy === 'price'}
+                      direction={orderBy === 'price' ? order : 'asc'}
+                      onClick={createSortHandler('price')}
+                    >
+                      Ціна (грн)
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell component="th">
+                    <TableSortLabel
+                      active={orderBy === 'duration'}
+                      direction={orderBy === 'duration' ? order : 'asc'}
+                      onClick={createSortHandler('duration')}
+                    >
+                      Тривалість (дні)
+                    </TableSortLabel>
+                  </TableCell>
+                  <TableCell component="th">Напрямок</TableCell>
+                  <TableCell component="th">Категорія</TableCell>
+                  <TableCell align="right" component="th" />
+                  <TableCell align="right" component="th" />
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {filteredTours.map((tour) => (
+                  <TableRow key={tour.name}>
+                    <TableCell scope="row">{tour.name}</TableCell>
+                    <TableCell scope="row">{tour.price.toFixed(2)}</TableCell>
+                    <TableCell scope="row">
+                      {moment.duration(tour.duration).asDays()}
+                    </TableCell>
+                    <TableCell scope="row">
+                      {tour.directions
+                        .map((direction) => direction.name)
+                        .join(', ')}
+                    </TableCell>
+                    <TableCell scope="row">
+                      {tour.categories
+                        .map((category) => category.name)
+                        .join(', ')}
+                    </TableCell>
+                    <TableCell>
+                      <Link href={`/tour/${tour.id}`}>Детальніше</Link>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        color="secondary"
+                        aria-label="delete"
+                        onClick={() => deleteTour(tour)}
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Box>
+      )}
       <SnackbarMessage
         isOpen={snackbarState.isOpen}
         onClose={onSnackbarClose}
@@ -218,9 +238,16 @@ const TourList: NextPage<Props> = ({ tours }) => {
 };
 
 export async function getServerSideProps(ctx) {
-  const props: Props = {
+  const props: TourListProps = {
     tours: (
       await axios.get('http://localhost:3000/api/tour', {
+        headers: {
+          Authorization: ctx.req.headers.authorization,
+        },
+      })
+    ).data,
+    agencies: (
+      await axios.get('http://localhost:3000/api/agency', {
         headers: {
           Authorization: ctx.req.headers.authorization,
         },

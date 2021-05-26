@@ -8,7 +8,6 @@ import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  makeStyles,
 } from '@material-ui/core';
 import OfficeStep from '../../components/office/OfficeStep';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';

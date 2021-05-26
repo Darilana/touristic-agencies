@@ -5,12 +5,12 @@ import FormInput from '../common/FormInput';
 import { Office } from '../../../src/office/office.entity';
 import isEmpty from 'lodash/isEmpty';
 
-interface Props {
+interface OfficeForm {
   deleteOffice: (office: Office) => void;
   office?: Office;
 }
 
-const OfficeForm: React.FC<Props> = ({ office, deleteOffice }) => {
+const OfficeForm: React.FC<OfficeForm> = ({ office, deleteOffice }) => {
   const { dirty, isValid } = useFormikContext();
 
   const validateRequiredField = (value) => {

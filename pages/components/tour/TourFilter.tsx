@@ -2,13 +2,16 @@ import * as React from 'react';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import { TextField } from '@material-ui/core';
 import axios from 'axios';
+import pickBy from 'lodash/pickBy';
+import identity from 'lodash/identity';
 import { Tour } from '../../../src/tour/tour.entity';
 
 interface TourFilterProps {
   options: { name: string; id: number }[];
   label: string;
-  onChange: React.Dispatch<React.SetStateAction<Tour[]>>;
+  onChange: (toursToDisplay: Tour[], params) => void;
   fieldType: string;
+  requestParams: { category?: string | null; direction?: string | null };
 }
 
 export const TourFilter: React.FC<TourFilterProps> = ({
@@ -16,28 +19,33 @@ export const TourFilter: React.FC<TourFilterProps> = ({
   label,
   onChange,
   fieldType,
+  requestParams,
 }) => {
   const handleChange = async (event, value) => {
-    const params = value
-      ? {
-          [fieldType]: value.name,
-        }
-      : {};
+    const params = {
+      [fieldType]: value?.name,
+    };
+
     const filteredTours = await axios.get('http://localhost:3000/api/tour', {
-      params,
+      params: pickBy({ ...requestParams, ...params }, identity),
     });
 
-    onChange(filteredTours.data);
+    onChange(filteredTours.data, params);
   };
 
   return (
     <Autocomplete
       id={fieldType}
       options={options}
-      getOptionLabel={(option) => option.name}
       style={{ width: 300 }}
       noOptionsText="Немає варіантів"
       onChange={handleChange}
+      getOptionLabel={(option) => {
+        return option?.name ? option.name : '';
+      }}
+      getOptionSelected={(option, value) => {
+        return option?.name === value?.name;
+      }}
       renderInput={(params) => (
         <TextField {...params} label={label} variant="outlined" />
       )}

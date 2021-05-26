@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Field, Form, FieldArray, useFormikContext } from 'formik';
-import { Button, Box, Typography, Link } from '@material-ui/core';
+import { Button, Box, Typography, Link, TextField } from '@material-ui/core';
 import FormInput from '../common/FormInput';
 import { Tour } from '../../../src/tour/tour.entity';
 import ChipInput from 'material-ui-chip-input';
@@ -9,14 +9,21 @@ import isEmpty from 'lodash/isEmpty';
 import { TourDetailsStepValues } from './TourDetailsStep';
 import { DropzoneArea } from 'material-ui-dropzone';
 import axios from 'axios';
+import { Agency } from '../../../src/agency/agency.entity';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
-interface Props {
+interface TourDetailsFormProps {
   tour?: Tour;
+  agencies?: Agency[];
 }
 
-const TourDetailsForm: React.FC<Props> = ({ tour }) => {
-  const { values, isValid, errors, initialValues, dirty, touched, setFieldValue } =
+const TourDetailsForm: React.FC<TourDetailsFormProps> = ({
+  tour,
+  agencies,
+}) => {
+  const { values, isValid, errors, initialValues, setFieldValue } =
     useFormikContext<TourDetailsStepValues>();
+
   const isFormDirty = !isEqual(initialValues, values);
 
   const validateRequiredField = (value) => {
@@ -36,27 +43,40 @@ const TourDetailsForm: React.FC<Props> = ({ tour }) => {
     }
     const formData = new FormData();
     formData.append('image', file);
-    return axios.post('http://localhost:3000/api/asset/upload-image', formData, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    }).then((response) => {
-      setFieldValue('image', response.data.filename);
-    });
+    return axios
+      .post('http://localhost:3000/api/asset/upload-image', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      .then((response) => {
+        setFieldValue('image', response.data.filename);
+      });
   };
 
   const initialFile = values.image
-      ? `http://localhost:3000/static/${values.image}`
-      : '';
+    ? `http://localhost:3000/static/${values.image}`
+    : '';
+
+  const agenciesOptions = agencies?.map((agency: Agency) => ({
+    name: agency.name,
+  }));
+
+  const handleAgencyChange = (e: React.ChangeEvent, value) => {
+    const agencyId = agencies?.find(
+      (agency: Agency) => agency.name === value.name,
+    )?.id;
+    setFieldValue('agencyId', agencyId);
+  };
 
   return (
     <Form>
       <Box display="flex" justifyContent="center">
         <Box display="flex" flexDirection="column" width={600}>
           {values.image && (
-              <Box mb={2}>
-                <img height={200} src={initialFile} />
-              </Box>
+            <Box mb={2}>
+              <img height={200} src={initialFile} />
+            </Box>
           )}
           <Box mb={2}>
             <Typography variant="h6">Назва</Typography>
@@ -117,9 +137,29 @@ const TourDetailsForm: React.FC<Props> = ({ tour }) => {
                   type="number"
                   id="agencyId"
                   name="agencyId"
-                  placeholder="Ідентифікатор агенції, що продає тур"
-                  component={FormInput}
-                  validate={validateRequiredField}
+                  placeholder="Агенції, що продає тур"
+                  component={() => (
+                    <Autocomplete
+                      id="agencyId"
+                      value={{
+                        name:
+                          agencies.find(
+                            (agency: Agency) => agency.id === values.agencyId,
+                          )?.name || '',
+                      }}
+                      fullWidth
+                      options={agenciesOptions}
+                      getOptionLabel={(option) => option.name}
+                      noOptionsText="Немає варіантів"
+                      onChange={handleAgencyChange}
+                      getOptionSelected={(option, value) => {
+                        return option?.name === value?.name;
+                      }}
+                      renderInput={(params) => (
+                        <TextField {...params} variant="outlined" />
+                      )}
+                    />
+                  )}
                 />
               </>
             )}
@@ -188,10 +228,10 @@ const TourDetailsForm: React.FC<Props> = ({ tour }) => {
           <Box mb={2}>
             <Typography variant="h6">Зображення</Typography>
             <DropzoneArea
-                onChange={handleFileUpload}
-                filesLimit={1}
-                acceptedFiles={['image/jpeg', 'image/png']}
-                initialFiles={initialFile ? [initialFile] : []}
+              onChange={handleFileUpload}
+              filesLimit={1}
+              acceptedFiles={['image/jpeg', 'image/png']}
+              initialFiles={initialFile ? [initialFile] : []}
             />
           </Box>
           <Button

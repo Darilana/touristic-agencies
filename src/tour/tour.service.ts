@@ -21,30 +21,42 @@ export class TourService {
     let queryBuilder = this.tourRepository
       .createQueryBuilder('tour')
       .leftJoinAndSelect('tour.directions', 'direction')
-      .leftJoinAndSelect('tour.categories', 'category')
+      .leftJoinAndSelect('tour.categories', 'category');
     if (category) {
-      queryBuilder = queryBuilder.andWhere('category.name = :name', { name: category })
+      queryBuilder = queryBuilder.andWhere('category.name = :category', {
+        category: category,
+      });
     }
     if (direction) {
-      queryBuilder = queryBuilder.andWhere('direction.name = :name', { name: direction })
+      queryBuilder = queryBuilder.andWhere('direction.name = :direction', {
+        direction: direction,
+      });
     }
     return queryBuilder.getMany();
   }
   async create(createTourParams: CreateTourParams): Promise<Tour> {
-    const categories = await this.categoryService.deduplicateCategories(createTourParams.categories || [])
-    const directions = await this.directionService.deduplicateDirections(createTourParams.directions || [])
+    const categories = await this.categoryService.deduplicateCategories(
+      createTourParams.categories || [],
+    );
+    const directions = await this.directionService.deduplicateDirections(
+      createTourParams.directions || [],
+    );
     return this.tourRepository.save({
       ...createTourParams,
       agency: {
-        id: createTourParams.agencyId
+        id: createTourParams.agencyId,
       },
       categories,
-      directions
+      directions,
     });
   }
   async update(updateTourParams: UpdateTourParams): Promise<Tour> {
-    const categories = await this.categoryService.deduplicateCategories(updateTourParams.categories || []) as Category[]
-    const directions = await this.directionService.deduplicateDirections(updateTourParams.directions || []) as Direction[]
+    const categories = (await this.categoryService.deduplicateCategories(
+      updateTourParams.categories || [],
+    )) as Category[];
+    const directions = (await this.directionService.deduplicateDirections(
+      updateTourParams.directions || [],
+    )) as Direction[];
     const tour = await this.tourRepository.findOne(updateTourParams.id);
     Object.assign(tour, updateTourParams);
     tour.categories = categories;
@@ -59,7 +71,7 @@ export class TourService {
   }
   async findOne(id: number): Promise<Tour | null> {
     return this.tourRepository.findOne(id, {
-      relations: ['agency']
+      relations: ['agency'],
     });
   }
   async remove(id: number): Promise<void> {
