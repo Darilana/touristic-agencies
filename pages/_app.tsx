@@ -100,12 +100,12 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
                 onClose={handleMenuClose}
               >
                 <MenuItem onClick={handleMenuClose}>
-                  <Link underline="none" color="textPrimary" href={'/agency'}>
+                  <Link underline="none" color="textPrimary" href={'/agency/'}>
                     Агенції
                   </Link>
                 </MenuItem>
                 <MenuItem onClick={handleMenuClose}>
-                  <Link underline="none" color="textPrimary" href={'/tour'}>
+                  <Link underline="none" color="textPrimary" href={'/tour/'}>
                     Тури
                   </Link>
                 </MenuItem>

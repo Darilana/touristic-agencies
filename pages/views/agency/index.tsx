@@ -23,8 +23,9 @@ import AgencyDetailsStep from '../../components/agency/AgencyDetailsStep';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useRouter } from 'next/router';
 import SnackbarMessage from '../../components/common/SnackBarMessage';
+import isEmpty from 'lodash/isEmpty';
 
-interface Props {
+interface AgencyListProps {
   agencies: Agency[];
 }
 
@@ -41,7 +42,7 @@ const useStyles = makeStyles({
   },
 });
 
-const AgencyList: NextPage<Props> = ({ agencies }) => {
+const AgencyList: NextPage<AgencyListProps> = ({ agencies }) => {
   const [snackbarState, setSnackbarState] = React.useState({
     isOpen: false,
     alertText: '',
@@ -63,7 +64,7 @@ const AgencyList: NextPage<Props> = ({ agencies }) => {
   };
 
   return (
-    <Box Box display="flex" flexDirection="column" alignItems="center">
+    <Box display="flex" flexDirection="column" alignItems="center">
       <Box display="flex" justifyContent="center" mb={4} mt={4}>
         <Typography variant="h4" color="textSecondary">
           Список агенцій
@@ -83,38 +84,40 @@ const AgencyList: NextPage<Props> = ({ agencies }) => {
           </AccordionDetails>
         </Accordion>
       </Box>
-      <TableContainer className={classes.tableContainer}>
-        <Table className={classes.table} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell component="th">Назва</TableCell>
-              <TableCell component="th">Номер телефону</TableCell>
-              <TableCell component="th" />
-              <TableCell align="right" component="th" />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {agencies.map((agency) => (
-              <TableRow key={agency.name}>
-                <TableCell scope="row">{agency.name}</TableCell>
-                <TableCell scope="row">{agency.phoneNumber}</TableCell>
-                <TableCell>
-                  <Link href={`/agency/${agency.id}`}>Детальніше</Link>
-                </TableCell>
-                <TableCell scope="row">
-                  <IconButton
-                    aria-label="delete"
-                    color="secondary"
-                    onClick={() => deleteAgency(agency)}
-                  >
-                    <DeleteIcon />
-                  </IconButton>
-                </TableCell>
+      {!isEmpty(agencies) && (
+        <TableContainer className={classes.tableContainer}>
+          <Table className={classes.table} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell component="th">Назва</TableCell>
+                <TableCell component="th">Номер телефону</TableCell>
+                <TableCell component="th" />
+                <TableCell align="right" component="th" />
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {agencies.map((agency) => (
+                <TableRow key={agency.name}>
+                  <TableCell scope="row">{agency.name}</TableCell>
+                  <TableCell scope="row">{agency.phoneNumber}</TableCell>
+                  <TableCell>
+                    <Link href={`/agency/${agency.id}`}>Детальніше</Link>
+                  </TableCell>
+                  <TableCell scope="row">
+                    <IconButton
+                      aria-label="delete"
+                      color="secondary"
+                      onClick={() => deleteAgency(agency)}
+                    >
+                      <DeleteIcon />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
       <SnackbarMessage
         isOpen={snackbarState.isOpen}
         onClose={onSnackbarClose}
@@ -126,7 +129,7 @@ const AgencyList: NextPage<Props> = ({ agencies }) => {
 };
 
 export async function getServerSideProps(ctx) {
-  const props: Props = {
+  const props: AgencyListProps = {
     agencies: (
       await axios.get('http://localhost:3000/api/agency', {
         headers: {

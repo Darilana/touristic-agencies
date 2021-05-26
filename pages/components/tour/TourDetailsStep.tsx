@@ -6,12 +6,12 @@ import TourDetailsForm from './TourDetailsForm';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import moment from 'moment';
-import { Direction } from '../../../src/direction/direction.entity';
-import { Category } from '../../../src/category/category.entity';
+import { Agency } from '../../../src/agency/agency.entity';
 
-interface Props {
+interface TourDetailsStepProps {
   tour?: Tour;
   setSnackbarState: ({ isOpen, alertText, alertSeverity }) => void;
+  agencies?: Agency[];
 }
 
 export interface TourDetailsStepValues {
@@ -22,9 +22,14 @@ export interface TourDetailsStepValues {
   directions: string[];
   categories: string[];
   image: string;
+  agencyId: number;
 }
 
-const TourDetailsStep: NextPage<Props> = ({ tour, setSnackbarState }) => {
+const TourDetailsStep: React.FC<TourDetailsStepProps> = ({
+  tour,
+  setSnackbarState,
+  agencies,
+}) => {
   const initialValues = {
     name: tour?.name || '',
     description: tour?.description || '',
@@ -32,7 +37,7 @@ const TourDetailsStep: NextPage<Props> = ({ tour, setSnackbarState }) => {
     price: tour?.price || 0,
     directions: tour?.directions.map((direction) => direction.name) || [],
     categories: tour?.categories.map((category) => category.name) || [],
-    image: tour?.image || ''
+    image: tour?.image || '',
   };
 
   const router = useRouter();
@@ -83,7 +88,7 @@ const TourDetailsStep: NextPage<Props> = ({ tour, setSnackbarState }) => {
 
   return (
     <Formik initialValues={initialValues} onSubmit={onSubmit}>
-      <TourDetailsForm tour={tour} />
+      <TourDetailsForm tour={tour} agencies={agencies} />
     </Formik>
   );
 };

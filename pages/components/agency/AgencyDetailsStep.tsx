@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useRouter } from 'next/router';
 import AgencyDetailsForm from './AgencyDetailsForm';
 
-interface Props {
+interface AgencyDetailsStepProps {
   agency?: Agency;
   setSnackbarState: ({ isOpen, alertText, alertSeverity }) => void;
 }
@@ -16,7 +16,10 @@ export interface AgencyDetailsStepValues {
   phoneNumber: string;
 }
 
-const AgencyDetailsStep: React.FC<Props> = ({ agency, setSnackbarState }) => {
+const AgencyDetailsStep: React.FC<AgencyDetailsStepProps> = ({
+  agency,
+  setSnackbarState,
+}) => {
   const router = useRouter();
 
   const refreshData = () => router.replace(router.asPath);
