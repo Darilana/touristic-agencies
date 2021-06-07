@@ -12,5 +12,6 @@
         "esModuleInterop": false
       }
     }
-  }
+  },
+  "setupFiles": ["<rootDir>/setEnvVars.js"]
 }

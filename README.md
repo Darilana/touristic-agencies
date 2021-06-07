@@ -1,33 +1,38 @@
 ## Description
 
-Touristic agencies catalogue
+Каталог туристичних агенцій
 
-## Installation
+## Передумови
 
+Для запуску системи потрібно встановити [docker-compose](https://docs.docker.com/compose/)
+
+## Запуск системи
+
+Відкрити термінал
+
+У терміналі перейти до директорі з проектом та виконати команду
 ```bash
-$ npm install
+docker-compose up
 ```
+Перший запуск може тривати декілька хвилин
 
-## Running the app
+Але наступні запуски займатимуть декілька секунд
 
+Дочекайтись напису `[NestApplication] Nest application successfully started`
+
+Відкрити у браузері адресу http://localhost:3000
+
+Ввести:
+
+логін - `admin`
+
+пароль - `NureKharkiv`
+
+## Запуск тестів
+
+(Майте на увазі що перед запуском тестів потрібно запустити систему згідно інструкції вище)
+
+Для запуска тестів необхідно виконати наступну команду
 ```bash
-# development
-$ docker compose -f docker-compose.deps.yaml up
-$ npm run dev
-
-# production mode
-$ npm run start:prod
-```
-
-## Test
-
-```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+docker-compose exec app sh -c "npm run test:e2e"
 ```
