@@ -7,12 +7,12 @@ export const databaseProviders = [
     useFactory: async () =>
       await createConnection({
         type: 'postgres',
-        host: 'localhost',
+        host: process.env.DB_HOST,
         port: 5432,
         logging: false,
-        username: 'postgres',
-        password: 'postgres',
-        database: 'touristic_agencies',
+        username: process.env.POSTGRES_USER,
+        password: process.env.POSTGRES_PASSWORD,
+        database: process.env.DB_NAME,
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
         synchronize: true,
       }),
