@@ -5,7 +5,6 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 
-
 async function bootstrap() {
   const dev = process.env.NODE_ENV !== 'production';
   const app = Next({ dev });
@@ -17,7 +16,7 @@ async function bootstrap() {
   const renderService = server.get(RenderService);
   renderService.setErrorHandler(async (err, req, res) => {
     res.send(err.response);
-  })
+  });
   const config = new DocumentBuilder()
     .setTitle('Touristic agencies catalogue')
     .setVersion('1.0')

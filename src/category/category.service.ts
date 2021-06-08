@@ -10,14 +10,18 @@ export class CategoryService {
     private categoryRepository: Repository<Category>,
   ) {}
 
-  findByName(name:string): Promise<Category | undefined> {
+  findByName(name: string): Promise<Category | undefined> {
     return this.categoryRepository.findOne({ name });
   }
 
-  deduplicateCategories(categories: Pick<Category, 'name'>[]): Promise<Partial<Category>[]> {
-    return Promise.all(categories.map(async (category) => {
-      const existingCategory = await this.findByName(category.name);
-      return existingCategory || category;
-    }))
+  deduplicateCategories(
+    categories: Pick<Category, 'name'>[],
+  ): Promise<Partial<Category>[]> {
+    return Promise.all(
+      categories.map(async (category) => {
+        const existingCategory = await this.findByName(category.name);
+        return existingCategory || category;
+      }),
+    );
   }
 }

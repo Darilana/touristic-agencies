@@ -5,10 +5,7 @@ import { DirectionService } from './direction.service';
 
 @Module({
   imports: [DatabaseModule],
-  providers: [
-    ...directionProviders,
-    DirectionService,
-  ],
-  exports: [DirectionService]
+  providers: [...directionProviders, DirectionService],
+  exports: [DirectionService],
 })
 export class DirectionModule {}

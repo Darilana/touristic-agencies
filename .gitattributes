@@ -1,0 +1,4 @@
+* auto eol=lf
+*.sh text eof=lf
+*.ts text eof=lf
+*.tsx text eof=lf
