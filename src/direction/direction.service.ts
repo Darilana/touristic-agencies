@@ -11,14 +11,18 @@ export class DirectionService {
     private directionRepository: Repository<Direction>,
   ) {}
 
-  findByName(name:string): Promise<Category | undefined> {
+  findByName(name: string): Promise<Category | undefined> {
     return this.directionRepository.findOne({ name });
   }
 
-  deduplicateDirections(directions: Pick<Direction, 'name'>[]): Promise<Partial<Direction>[]> {
-    return Promise.all(directions.map(async (direction) => {
-      const existingDirection = await this.findByName(direction.name);
-      return existingDirection || direction;
-    }))
+  deduplicateDirections(
+    directions: Pick<Direction, 'name'>[],
+  ): Promise<Partial<Direction>[]> {
+    return Promise.all(
+      directions.map(async (direction) => {
+        const existingDirection = await this.findByName(direction.name);
+        return existingDirection || direction;
+      }),
+    );
   }
 }

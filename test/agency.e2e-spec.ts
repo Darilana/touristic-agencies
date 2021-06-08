@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { Repository } from 'typeorm';
 import { Agency } from '../src/agency/agency.entity';
@@ -16,7 +16,8 @@ describe('AgencyController (e2e)', () => {
   beforeAll(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
-    }).overrideGuard(BasicAuthGuard)
+    })
+      .overrideGuard(BasicAuthGuard)
       .useValue({
         canActivate: () => true,
       })
@@ -29,24 +30,26 @@ describe('AgencyController (e2e)', () => {
   });
 
   afterEach(async () => {
-    await officeRepository.delete({})
-    await agencyRepository.delete({})
-  })
+    await officeRepository.delete({});
+    await agencyRepository.delete({});
+  });
 
   it('should return list of agencies', async () => {
     const agency = await agencyRepository.save({
       name: 'TEST_NAME',
       description: 'TEST_DESCRIPTION',
-      phoneNumber: 123456789,
+      phoneNumber: '123456789',
     });
     return request(app.getHttpServer())
       .get('/api/agency')
       .expect(200)
-      .expect(response => {
-        expect(response.body).toEqual([{
-          ...agency,
-          offices: []
-        }])
+      .expect((response) => {
+        expect(response.body).toEqual([
+          {
+            ...agency,
+            offices: [],
+          },
+        ]);
       });
   });
 
@@ -54,20 +57,20 @@ describe('AgencyController (e2e)', () => {
     const agency = await agencyRepository.save({
       name: 'TEST_NAME',
       description: 'TEST_DESCRIPTION',
-      phoneNumber: 123456789,
+      phoneNumber: '123456789',
     });
     return request(app.getHttpServer())
       .get(`/api/agency/${agency.id}`)
       .expect(200)
-      .expect(response => {
+      .expect((response) => {
         expect(response.body).toEqual({
           id: agency.id,
           name: agency.name,
           description: agency.description,
           phoneNumber: agency.phoneNumber,
           status: agency.status,
-          offices: []
-        })
+          offices: [],
+        });
       });
   });
 
@@ -75,29 +78,31 @@ describe('AgencyController (e2e)', () => {
     const agency = await agencyRepository.save({
       name: 'TEST_NAME',
       description: 'TEST_DESCRIPTION',
-      phoneNumber: 123456789,
+      phoneNumber: '123456789',
     });
     const office = await officeRepository.save({
       address: 'TEST_ADDRESS',
-      phoneNumber: 123456789,
+      phoneNumber: '123456789',
       workingHours: 'TEST_WORKING_HOURS',
       agency: {
-        id: agency.id
-      }
-    })
+        id: agency.id,
+      },
+    });
     return request(app.getHttpServer())
       .get(`/api/agency/${agency.id}`)
       .expect(200)
-      .expect(response => {
+      .expect((response) => {
         expect(response.body).toEqual({
           ...agency,
-          offices: [{
-            id: office.id,
-            address: office.address,
-            phoneNumber: office.phoneNumber,
-            workingHours: office.workingHours,
-          }]
-        })
+          offices: [
+            {
+              id: office.id,
+              address: office.address,
+              phoneNumber: office.phoneNumber,
+              workingHours: office.workingHours,
+            },
+          ],
+        });
       });
   });
 
@@ -105,7 +110,7 @@ describe('AgencyController (e2e)', () => {
     const agency = await agencyRepository.save({
       name: 'TEST_NAME',
       description: 'TEST_DESCRIPTION',
-      phoneNumber: 123456789,
+      phoneNumber: '123456789',
     });
     await request(app.getHttpServer())
       .delete(`/api/agency/${agency.id}`)
@@ -114,8 +119,8 @@ describe('AgencyController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/api/agency')
       .expect(200)
-      .expect(response => {
-        expect(response.body).toEqual([])
+      .expect((response) => {
+        expect(response.body).toEqual([]);
       });
   });
 
@@ -125,16 +130,16 @@ describe('AgencyController (e2e)', () => {
       .send({
         name: 'TEST_NAME',
         description: 'TEST_DESCRIPTION',
-        phoneNumber: 123456789,
+        phoneNumber: '123456789',
       })
       .expect(201)
-      .expect(response => {
+      .expect((response) => {
         expect(response.body).toMatchObject({
           name: 'TEST_NAME',
           description: 'TEST_DESCRIPTION',
-          phoneNumber: 123456789,
+          phoneNumber: '123456789',
           status: 'ACTIVE',
-        })
+        });
       });
   });
 
@@ -142,24 +147,24 @@ describe('AgencyController (e2e)', () => {
     const agency = await agencyRepository.save({
       name: 'TEST_NAME',
       description: 'TEST_DESCRIPTION',
-      phoneNumber: 123456789,
+      phoneNumber: '123456789',
     });
     return request(app.getHttpServer())
       .put(`/api/agency/${agency.id}`)
       .send({
         id: agency.id,
-        description: 'TEST_DESCRIPTION_2'
+        description: 'TEST_DESCRIPTION_2',
       })
       .expect(200)
-      .expect(response => {
+      .expect((response) => {
         expect(response.body).toEqual({
           id: agency.id,
           name: agency.name,
           description: 'TEST_DESCRIPTION_2',
           phoneNumber: agency.phoneNumber,
           status: agency.status,
-          offices: []
-        })
+          offices: [],
+        });
       });
   });
 });

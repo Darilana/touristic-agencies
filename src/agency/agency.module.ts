@@ -6,12 +6,7 @@ import { AgencyController } from './agency.controller';
 
 @Module({
   imports: [DatabaseModule],
-  providers: [
-    ...agencyProviders,
-    AgencyService,
-  ],
-  controllers: [
-    AgencyController
-  ]
+  providers: [...agencyProviders, AgencyService],
+  controllers: [AgencyController],
 })
 export class AgencyModule {}

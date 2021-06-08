@@ -18,7 +18,10 @@ export class AgencyService {
     return this.agencyRepository.save(createAgencyParams);
   }
   async update(updateAgencyParams: UpdateAgencyParams): Promise<Agency> {
-    await this.agencyRepository.update(updateAgencyParams.id, updateAgencyParams);
+    await this.agencyRepository.update(
+      updateAgencyParams.id,
+      updateAgencyParams,
+    );
     return this.agencyRepository.findOne(updateAgencyParams.id);
   }
   async findOne(id: number): Promise<Agency | null> {

@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
+import request from 'supertest';
 import { AppModule } from './../src/app.module';
 import { Repository } from 'typeorm';
 import constants from '../src/constants';
@@ -46,7 +46,7 @@ describe('TourController (e2e)', () => {
     const agency = await agencyRepository.save({
       name: 'TEST_NAME',
       description: 'TEST_DESCRIPTION',
-      phoneNumber: 123456789,
+      phoneNumber: '123456789',
     });
     const tour = await tourRepository.save({
       name: 'TEST_NAME',
@@ -70,6 +70,7 @@ describe('TourController (e2e)', () => {
             id: tour.id,
             categories: [],
             directions: [],
+            image: null,
           },
         ]);
       });
@@ -79,7 +80,7 @@ describe('TourController (e2e)', () => {
     const agency = await agencyRepository.save({
       name: 'TEST_NAME',
       description: 'TEST_DESCRIPTION',
-      phoneNumber: 123456789,
+      phoneNumber: '123456789',
     });
     const tour = await tourRepository.save({
       name: 'TEST_NAME',
@@ -102,6 +103,7 @@ describe('TourController (e2e)', () => {
           id: tour.id,
           categories: [],
           directions: [],
+          image: null,
           agency: {
             id: agency.id,
             description: agency.description,
@@ -118,7 +120,7 @@ describe('TourController (e2e)', () => {
     const agency = await agencyRepository.save({
       name: 'TEST_NAME',
       description: 'TEST_DESCRIPTION',
-      phoneNumber: 123456789,
+      phoneNumber: '123456789',
     });
     const tour = await tourRepository.save({
       name: 'TEST_NAME',
@@ -145,7 +147,7 @@ describe('TourController (e2e)', () => {
     const agency = await agencyRepository.save({
       name: 'TEST_NAME',
       description: 'TEST_DESCRIPTION',
-      phoneNumber: 123456789,
+      phoneNumber: '123456789',
     });
     await request(app.getHttpServer())
       .post(`/api/tour`)
@@ -171,7 +173,7 @@ describe('TourController (e2e)', () => {
     const agency = await agencyRepository.save({
       name: 'TEST_NAME',
       description: 'TEST_DESCRIPTION',
-      phoneNumber: 123456789,
+      phoneNumber: '123456789',
     });
     await request(app.getHttpServer())
       .post(`/api/tour`)
@@ -199,7 +201,7 @@ describe('TourController (e2e)', () => {
     const agency = await agencyRepository.save({
       name: 'TEST_NAME',
       description: 'TEST_DESCRIPTION',
-      phoneNumber: 123456789,
+      phoneNumber: '123456789',
     });
     await request(app.getHttpServer())
       .post(`/api/tour`)
@@ -227,7 +229,7 @@ describe('TourController (e2e)', () => {
     const agency = await agencyRepository.save({
       name: 'TEST_NAME',
       description: 'TEST_DESCRIPTION',
-      phoneNumber: 123456789,
+      phoneNumber: '123456789',
     });
     const tour = await tourRepository.save({
       name: 'TEST_NAME',
@@ -251,6 +253,7 @@ describe('TourController (e2e)', () => {
           description: tour.description,
           duration: tour.duration,
           id: tour.id,
+          image: null,
           categories: [],
           directions: [],
         });
@@ -261,7 +264,7 @@ describe('TourController (e2e)', () => {
     const agency = await agencyRepository.save({
       name: 'TEST_NAME',
       description: 'TEST_DESCRIPTION',
-      phoneNumber: 123456789,
+      phoneNumber: '123456789',
     });
     const tour1 = await tourRepository.save({
       name: 'TEST_NAME_1',
@@ -311,7 +314,7 @@ describe('TourController (e2e)', () => {
     const agency = await agencyRepository.save({
       name: 'TEST_NAME',
       description: 'TEST_DESCRIPTION',
-      phoneNumber: 123456789,
+      phoneNumber: '123456789',
     });
     const tour1 = await tourRepository.save({
       name: 'TEST_NAME_1',

@@ -1,4 +1,13 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateOfficeParams, UpdateOfficeParams } from './office.dto';
 import { Office } from './office.entity';
 import { OfficeService } from './office.service';
@@ -20,7 +29,9 @@ export class OfficeController {
   }
 
   @Put(':id')
-  async update(@Body() updateOfficeParams: UpdateOfficeParams): Promise<Office> {
+  async update(
+    @Body() updateOfficeParams: UpdateOfficeParams,
+  ): Promise<Office> {
     return this.officeService.update(updateOfficeParams);
   }
 }

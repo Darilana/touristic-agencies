@@ -15,13 +15,16 @@ export class OfficeService {
     return this.officeRepository.save({
       ...createOfficeParams,
       agency: {
-        id: createOfficeParams.agencyId
-      }
+        id: createOfficeParams.agencyId,
+      },
     });
   }
 
   async update(updateOfficeParams: UpdateOfficeParams): Promise<Office> {
-    await this.officeRepository.update({ id: updateOfficeParams.id }, updateOfficeParams);
+    await this.officeRepository.update(
+      { id: updateOfficeParams.id },
+      updateOfficeParams,
+    );
     return this.officeRepository.findOne(updateOfficeParams.id);
   }
 

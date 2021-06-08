@@ -7,17 +7,8 @@ import { CategoryModule } from '../category/category.module';
 import { DirectionModule } from '../direction/direction.module';
 
 @Module({
-  imports: [
-    DatabaseModule,
-    CategoryModule,
-    DirectionModule
-  ],
-  providers: [
-    ...tourProviders,
-    TourService,
-  ],
-  controllers: [
-    TourController
-  ]
+  imports: [DatabaseModule, CategoryModule, DirectionModule],
+  providers: [...tourProviders, TourService],
+  controllers: [TourController],
 })
 export class TourModule {}

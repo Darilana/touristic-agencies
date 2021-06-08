@@ -6,12 +6,7 @@ import { OfficeController } from './office.controller';
 
 @Module({
   imports: [DatabaseModule],
-  providers: [
-    ...officeProviders,
-    OfficeService,
-  ],
-  controllers: [
-    OfficeController
-  ]
+  providers: [...officeProviders, OfficeService],
+  controllers: [OfficeController],
 })
 export class OfficeModule {}

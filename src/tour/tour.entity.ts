@@ -30,7 +30,7 @@ export class Tour {
   duration: string;
 
   @Column('text', {
-    nullable: true
+    nullable: true,
   })
   image: string;
 
