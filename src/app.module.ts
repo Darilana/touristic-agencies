@@ -9,7 +9,6 @@ import { AuthModule } from './auth/auth.module';
 import { AssetModule } from './asset/asset.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import path from 'path';
-import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
@@ -25,7 +24,6 @@ import { StatisticsModule } from './statistics/statistics.module';
     ViewModule,
     AuthModule,
     AssetModule,
-    StatisticsModule,
   ],
 })
 export class AppModule {}

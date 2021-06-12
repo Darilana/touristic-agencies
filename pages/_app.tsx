@@ -109,24 +109,6 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
                     Тури
                   </Link>
                 </MenuItem>
-                <MenuItem onClick={handleMenuClose}>
-                  <Link
-                    underline="none"
-                    color="textPrimary"
-                    href={'/statistics/report'}
-                  >
-                    Статистика
-                  </Link>
-                </MenuItem>
-                <MenuItem onClick={handleMenuClose}>
-                  <Link
-                    underline="none"
-                    color="textPrimary"
-                    href={'/statistics/query-runner'}
-                  >
-                    Виконувач SQL запитів
-                  </Link>
-                </MenuItem>
               </StyledMenu>
               <Typography variant="h6" className={classes.title}>
                 Travel admin

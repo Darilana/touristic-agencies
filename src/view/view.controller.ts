@@ -41,16 +41,4 @@ export class ViewController {
   agencyDetails(@Param('id') id: number) {
     return {};
   }
-
-  @Render('statistics/report')
-  @Get('statistics/report')
-  statisticsReport() {
-    return {};
-  }
-
-  @Render('statistics/query-runner')
-  @Get('statistics/query-runner')
-  statisticsQueryRunner() {
-    return {};
-  }
 }
