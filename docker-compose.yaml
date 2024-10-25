@@ -14,7 +14,7 @@ services:
       - .:/usr/src/app/
     command: sh -c "./wait-for-postgres.sh db npm install && npm run dev"
   db:
-    image: postgres:11.10
+    image: postgres:12
     ports:
       - "5432:5432"
     volumes:
