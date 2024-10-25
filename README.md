@@ -1,46 +1,52 @@
 ## Description
 
-Туристичні агенціі України
+### Touristic Agency Catalog
 
-## Передумови
+This project is a comprehensive catalog for managing information on touristic agencies and their available tours. It allows users to create, edit, and view details for agencies and tours. Key functionalities include:
 
-Для запуску системи потрібно встановити [docker-compose](https://docs.docker.com/compose/)
+- Agency Management: Add new agencies to the catalog, edit existing agency details, and view agency profiles.    
+- Tour Management: Add tours and associate them with specific agencies, edit tour details, and manage existing tour information.     
+- Filtering & Sorting: Search and filter tours based on various criteria, and sort results to quickly locate specific information.    
 
-## Запуск системи
+This project provides an organized, user-friendly platform to help users browse, manage, and optimize information related to touristic agencies and their offerings.
 
-Відкрити термінал
+## Prerequisites
 
-У терміналі перейти до директорі з проектом та виконати команду
+To run the project, you need to install [docker-compose](https://docs.docker.com/compose/)
+
+## Running the project
+
+Open the terminal
+
+In the terminal, go to the project directory and execute the command:
 ```bash
 docker-compose up
 ```
-Перший запуск програми може тривати декілька хвилин
+The first launch of the project may take several minutes
+Subsequent launches will take a few seconds
 
-Наступні запуски займатимуть декілька секунд
+Wait until you see `[NestApplication] Nest application successfully started` in the terminal
 
-Дочекайтись напису `[NestApplication] Nest application successfully started`
+Open the project in browser: http://localhost:3000
 
-Відкрити у браузері адресу http://localhost:3000
+Auth credentials:
 
-Ввести:
-
-логін - `admin`
-
-пароль - `NureKharkiv`
+user - `admin`
+password - `NureKharkiv`
 
 ### OpenApi 
 
-Після запуску проекту OpenApi специфікація доступна за адресою http://localhost:3000/api
+After the project has been launched, OpenApi specification is available here: http://localhost:3000/api
 
-## Запуск тестів
+## Running the tests
 
-(Майте на увазі що перед запуском тестів потрібно запустити систему згідно інструкції вище)
+(Before running the tests you need to launch the project according to the instructions above)
 
-Для запуска тестів необхідно:
+To run the tests, you need:
 
-Відкрити окремий термінал
+Open a separate terminal
 
-У терміналі перейти до директорі з проектом та виконати команду
+In the terminal, go to the project directory and execute the command:
 ```bash
 docker-compose exec app sh -c "npm run test:e2e"
 ```
