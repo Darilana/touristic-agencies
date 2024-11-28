@@ -7,12 +7,12 @@ import isEmpty from 'lodash/isEmpty';
 const AgencyDetailsForm: React.FC = () => {
   const { dirty, isValid } = useFormikContext();
 
-  const validateRequiredField = (value) => {
-    if (!value || (Array.isArray(value) && isEmpty(value))) {
+  const validateRequiredField = (value: string | string[]) => {
+    if (isEmpty(value)) {
       return (
-        <Box>
-          <Typography color="error">Обов'язкове поле</Typography>
-        </Box>
+        <div>
+          <Typography color="error">This field is required</Typography>
+        </div>
       );
     }
   };
@@ -22,34 +22,34 @@ const AgencyDetailsForm: React.FC = () => {
       <Box display="flex" justifyContent="center">
         <Box display="flex" flexDirection="column" width={600}>
           <Box mb={2}>
-            <Typography variant="h6">Назва</Typography>
+            <Typography variant="h6">Name</Typography>
             <Field
               required
               id="name"
               name="name"
-              placeholder="Назва агенції"
+              placeholder="Agency name"
               component={FormInput}
               validate={validateRequiredField}
             />
           </Box>
           <Box mb={2}>
-            <Typography variant="h6">Опис</Typography>
+            <Typography variant="h6">Description</Typography>
             <Field
               required
               id="description"
               name="description"
-              placeholder="Опис агенції"
+              placeholder="Agency description"
               component={FormInput}
               validate={validateRequiredField}
             />
           </Box>
           <Box mb={2}>
-            <Typography variant="h6">Номер телефону</Typography>
+            <Typography variant="h6">Phone number</Typography>
             <Field
               required
               id="phoneNumber"
               name="phoneNumber"
-              placeholder="Номер телефону агенції"
+              placeholder="Agency phone number"
               component={FormInput}
               validate={validateRequiredField}
             />
@@ -61,7 +61,7 @@ const AgencyDetailsForm: React.FC = () => {
             size="large"
             disabled={!dirty || !isValid}
           >
-            Зберегти зміни
+            Save changes
           </Button>
         </Box>
       </Box>

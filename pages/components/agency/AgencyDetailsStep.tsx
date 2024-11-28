@@ -4,16 +4,11 @@ import { Formik } from 'formik';
 import axios from 'axios';
 import { useRouter } from 'next/router';
 import AgencyDetailsForm from './AgencyDetailsForm';
+import { SnackbarState } from '../common/SnackBarMessage';
 
 interface AgencyDetailsStepProps {
   agency?: Agency;
-  setSnackbarState: ({ isOpen, alertText, alertSeverity }) => void;
-}
-
-export interface AgencyDetailsStepValues {
-  name: string;
-  description: string;
-  phoneNumber: string;
+  setSnackbarState: (snackbarState: SnackbarState) => void;
 }
 
 const AgencyDetailsStep: React.FC<AgencyDetailsStepProps> = ({
@@ -30,7 +25,9 @@ const AgencyDetailsStep: React.FC<AgencyDetailsStepProps> = ({
     phoneNumber: agency?.phoneNumber || '',
   };
 
-  const onSubmit = (values: AgencyDetailsStepValues) => {
+  const onSubmit = (
+    values: Pick<Agency, 'name' | 'description' | 'phoneNumber'>,
+  ) => {
     const operation = agency
       ? axios.put(`http://localhost:3000/api/agency/${agency.id}`, {
           ...values,
@@ -44,15 +41,15 @@ const AgencyDetailsStep: React.FC<AgencyDetailsStepProps> = ({
       .then(() => {
         setSnackbarState({
           isOpen: true,
-          alertText: 'Зміни було успішно збережено',
+          alertText: 'Changes were successfully saved',
           alertSeverity: 'success',
         });
         refreshData();
       })
-      .catch((e) => {
+      .catch(() => {
         setSnackbarState({
           isOpen: true,
-          alertText: 'Сталася помилка',
+          alertText: 'An error occurred while saving changes',
           alertSeverity: 'error',
         });
       });

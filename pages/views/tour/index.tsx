@@ -24,12 +24,16 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import { useRouter } from 'next/router';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import TourDetailsStep from '../../components/tour/TourDetailsStep';
-import SnackbarMessage from '../../components/common/SnackBarMessage';
+import SnackbarMessage, {
+  SnackbarState,
+} from '../../components/common/SnackBarMessage';
 import flatten from 'lodash/flatten';
 import uniqBy from 'lodash/uniqBy';
 import { TourFilter } from '../../components/tour/TourFilter';
 import isEmpty from 'lodash/isEmpty';
 import { Agency } from '../../../src/agency/agency.entity';
+import { Direction } from 'src/direction/direction.entity';
+import { Category } from 'src/category/category.entity';
 
 interface TourListProps {
   tours: Tour[];
@@ -54,10 +58,9 @@ const TourList: NextPage<TourListProps> = ({ tours, agencies }) => {
   const [requestParams, setRequestParams] = React.useState({});
   const [order, setOrder] = React.useState<'asc' | 'desc'>('asc');
   const [orderBy, setOrderBy] = React.useState('price');
-  const [snackbarState, setSnackbarState] = React.useState({
+  const [snackbarState, setSnackbarState] = React.useState<SnackbarState>({
     isOpen: false,
     alertText: '',
-    alertSeverity: '',
   });
 
   const classes = useStyles();
@@ -68,7 +71,7 @@ const TourList: NextPage<TourListProps> = ({ tours, agencies }) => {
   const getAutocompleteOptions = (options: string) =>
     uniqBy(
       flatten(filteredTours.map((tour) => tour[options])),
-      (option) => option.name,
+      (option: Direction | Category) => option.name,
     );
 
   const directionsOptions = getAutocompleteOptions('directions');
@@ -79,16 +82,16 @@ const TourList: NextPage<TourListProps> = ({ tours, agencies }) => {
 
   const refreshData = () => router.replace(router.asPath);
 
-  const deleteTour = (tour) => {
+  const deleteTour = (tour: Tour) => {
     axios.delete(`http://localhost:3000/api/tour/${tour.id}`);
     refreshData();
   };
 
-  const handleSort = (event, property) => {
+  const handleSort = (property: string) => {
     setOrder(order === 'asc' ? 'desc' : 'asc');
     setOrderBy(property);
 
-    const compareFn = (i, j) => {
+    const compareFn = (i: Tour, j: Tour) => {
       if (i[property] < j[property]) {
         return order === 'asc' ? -1 : 1;
       } else {
@@ -104,11 +107,14 @@ const TourList: NextPage<TourListProps> = ({ tours, agencies }) => {
     setFilteredTours(sortedItems);
   };
 
-  const createSortHandler = (property) => (event) => {
-    handleSort(event, property);
+  const createSortHandler = (property: string) => () => {
+    handleSort(property);
   };
 
-  const onFilterChange = (toursToDisplay: Tour[], params) => {
+  const onFilterChange = (
+    toursToDisplay: Tour[],
+    params: Record<string, string>,
+  ) => {
     setFilteredTours(toursToDisplay);
     setRequestParams({ ...requestParams, ...params });
   };
@@ -117,7 +123,7 @@ const TourList: NextPage<TourListProps> = ({ tours, agencies }) => {
     <Box display="flex" flexDirection="column" alignItems="center">
       <Box display="flex" justifyContent="center" mb={4} mt={4}>
         <Typography variant="h4" color="textSecondary">
-          Список турів
+          List of tours
         </Typography>
       </Box>
       <Box display="flex" justifyContent="center" mb={4} mt={4}>
@@ -127,7 +133,7 @@ const TourList: NextPage<TourListProps> = ({ tours, agencies }) => {
             aria-controls="panel1a-content"
             id="panel1a-header"
           >
-            <Typography>Додати тур</Typography>
+            <Typography>Add tour</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <TourDetailsStep
@@ -148,14 +154,14 @@ const TourList: NextPage<TourListProps> = ({ tours, agencies }) => {
           >
             <TourFilter
               options={directionsOptions}
-              label="Напрямки"
+              label="Directions"
               fieldType="direction"
               requestParams={requestParams}
               onChange={onFilterChange}
             />
             <TourFilter
               options={categoriesOptions}
-              label="Категорії"
+              label="Categories"
               fieldType="category"
               requestParams={requestParams}
               onChange={onFilterChange}
@@ -165,14 +171,14 @@ const TourList: NextPage<TourListProps> = ({ tours, agencies }) => {
             <Table className={classes.table} aria-label="simple table">
               <TableHead>
                 <TableRow>
-                  <TableCell component="th">Назва</TableCell>
+                  <TableCell component="th">Name</TableCell>
                   <TableCell component="th">
                     <TableSortLabel
                       active={orderBy === 'price'}
                       direction={orderBy === 'price' ? order : 'asc'}
                       onClick={createSortHandler('price')}
                     >
-                      Ціна (грн)
+                      Price (USD)
                     </TableSortLabel>
                   </TableCell>
                   <TableCell component="th">
@@ -181,11 +187,11 @@ const TourList: NextPage<TourListProps> = ({ tours, agencies }) => {
                       direction={orderBy === 'duration' ? order : 'asc'}
                       onClick={createSortHandler('duration')}
                     >
-                      Тривалість (дні)
+                      Duration (days)
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell component="th">Напрямок</TableCell>
-                  <TableCell component="th">Категорія</TableCell>
+                  <TableCell component="th">Direction</TableCell>
+                  <TableCell component="th">Category</TableCell>
                   <TableCell align="right" component="th" />
                   <TableCell align="right" component="th" />
                 </TableRow>
@@ -209,7 +215,7 @@ const TourList: NextPage<TourListProps> = ({ tours, agencies }) => {
                         .join(', ')}
                     </TableCell>
                     <TableCell>
-                      <Link href={`/tour/${tour.id}`}>Детальніше</Link>
+                      <Link href={`/tour/${tour.id}`}>More details...</Link>
                     </TableCell>
                     <TableCell>
                       <IconButton
@@ -228,10 +234,8 @@ const TourList: NextPage<TourListProps> = ({ tours, agencies }) => {
         </Box>
       )}
       <SnackbarMessage
-        isOpen={snackbarState.isOpen}
+        snackbarState={snackbarState}
         onClose={onSnackbarClose}
-        alertText={snackbarState.alertText}
-        alertSeverity={snackbarState.alertSeverity}
       />
     </Box>
   );

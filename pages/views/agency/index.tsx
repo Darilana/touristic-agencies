@@ -22,7 +22,9 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AgencyDetailsStep from '../../components/agency/AgencyDetailsStep';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { useRouter } from 'next/router';
-import SnackbarMessage from '../../components/common/SnackBarMessage';
+import SnackbarMessage, {
+  SnackbarState,
+} from '../../components/common/SnackBarMessage';
 import isEmpty from 'lodash/isEmpty';
 
 interface AgencyListProps {
@@ -43,10 +45,9 @@ const useStyles = makeStyles({
 });
 
 const AgencyList: NextPage<AgencyListProps> = ({ agencies }) => {
-  const [snackbarState, setSnackbarState] = React.useState({
+  const [snackbarState, setSnackbarState] = React.useState<SnackbarState>({
     isOpen: false,
     alertText: '',
-    alertSeverity: '',
   });
 
   const onSnackbarClose = () =>
@@ -67,7 +68,7 @@ const AgencyList: NextPage<AgencyListProps> = ({ agencies }) => {
     <Box display="flex" flexDirection="column" alignItems="center">
       <Box display="flex" justifyContent="center" mb={4} mt={4}>
         <Typography variant="h4" color="textSecondary">
-          Список агенцій
+          List of the agencies
         </Typography>
       </Box>
       <Box display="flex" justifyContent="center" mb={4} mt={4}>
@@ -77,7 +78,7 @@ const AgencyList: NextPage<AgencyListProps> = ({ agencies }) => {
             aria-controls="panel1a-content"
             id="panel1a-header"
           >
-            <Typography>Додати агенцію</Typography>
+            <Typography>Add agency</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <AgencyDetailsStep setSnackbarState={setSnackbarState} />
@@ -89,8 +90,8 @@ const AgencyList: NextPage<AgencyListProps> = ({ agencies }) => {
           <Table className={classes.table} aria-label="simple table">
             <TableHead>
               <TableRow>
-                <TableCell component="th">Назва</TableCell>
-                <TableCell component="th">Номер телефону</TableCell>
+                <TableCell component="th">Name</TableCell>
+                <TableCell component="th">Phone number</TableCell>
                 <TableCell component="th" />
                 <TableCell align="right" component="th" />
               </TableRow>
@@ -101,7 +102,7 @@ const AgencyList: NextPage<AgencyListProps> = ({ agencies }) => {
                   <TableCell scope="row">{agency.name}</TableCell>
                   <TableCell scope="row">{agency.phoneNumber}</TableCell>
                   <TableCell>
-                    <Link href={`/agency/${agency.id}`}>Детальніше</Link>
+                    <Link href={`/agency/${agency.id}`}>More details...</Link>
                   </TableCell>
                   <TableCell scope="row">
                     <IconButton
@@ -119,10 +120,8 @@ const AgencyList: NextPage<AgencyListProps> = ({ agencies }) => {
         </TableContainer>
       )}
       <SnackbarMessage
-        isOpen={snackbarState.isOpen}
+        snackbarState={snackbarState}
         onClose={onSnackbarClose}
-        alertText={snackbarState.alertText}
-        alertSeverity={snackbarState.alertSeverity}
       />
     </Box>
   );

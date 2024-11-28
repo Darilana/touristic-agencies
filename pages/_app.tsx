@@ -1,4 +1,4 @@
-import type { AppProps /*, AppContext */ } from 'next/app';
+import type { AppProps } from 'next/app';
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -67,7 +67,7 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
-  const handleMenuClick = (event) => {
+  const handleMenuClick = (event: React.MouseEvent) => {
     setIsMenuOpen(!isMenuOpen);
     setAnchorEl(event.currentTarget);
   };
@@ -95,18 +95,17 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
               <StyledMenu
                 id="menu"
                 anchorEl={anchorEl}
-                keepMounted
                 open={isMenuOpen}
                 onClose={handleMenuClose}
               >
                 <MenuItem onClick={handleMenuClose}>
                   <Link underline="none" color="textPrimary" href={'/agency/'}>
-                    Агенції
+                    Agencies
                   </Link>
                 </MenuItem>
                 <MenuItem onClick={handleMenuClose}>
                   <Link underline="none" color="textPrimary" href={'/tour/'}>
-                    Тури
+                    Tours
                   </Link>
                 </MenuItem>
               </StyledMenu>
@@ -124,11 +123,11 @@ const MyApp: React.FC<AppProps> = ({ Component, pageProps }) => {
         <Box display="flex" flexDirection="column">
           <Box display="flex" alignItems="center" justifyContent="center">
             <ContactsIcon className={classes.iconButton} />
-            <Typography variant="h6">Контакти:</Typography>
+            <Typography variant="h6">Contacts:</Typography>
           </Box>
           <Typography>travel_admin@gmail.com</Typography>
           <Typography>+38(063)111-11-11</Typography>
-          <Typography>Україна, м.Харків, проспект Науки 2</Typography>
+          <Typography>Botanichna St, 1, Kharkiv, Ukraine</Typography>
         </Box>
       </div>
     </div>

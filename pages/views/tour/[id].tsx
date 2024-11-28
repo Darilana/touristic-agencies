@@ -4,17 +4,18 @@ import { NextPage, NextPageContext } from 'next';
 import { Tour } from '../../../src/tour/tour.entity';
 import TourDetailsStep from '../../components/tour/TourDetailsStep';
 import { Box, Typography } from '@material-ui/core';
-import SnackbarMessage from '../../components/common/SnackBarMessage';
+import SnackbarMessage, {
+  SnackbarState,
+} from '../../components/common/SnackBarMessage';
 
 interface TourDetailsProps {
   tour: Tour;
 }
 
 const TourDetails: NextPage<TourDetailsProps> = ({ tour }) => {
-  const [snackbarState, setSnackbarState] = React.useState({
+  const [snackbarState, setSnackbarState] = React.useState<SnackbarState>({
     isOpen: false,
     alertText: '',
-    alertSeverity: '',
   });
 
   const onSnackbarClose = () =>
@@ -24,15 +25,13 @@ const TourDetails: NextPage<TourDetailsProps> = ({ tour }) => {
     <Box mb={4}>
       <Box mt={4} mb={2} display="flex" justifyContent="center">
         <Typography variant="h5" color="textSecondary">
-          Деталі туру
+          Tour details
         </Typography>
       </Box>
       <TourDetailsStep tour={tour} setSnackbarState={setSnackbarState} />
       <SnackbarMessage
-        isOpen={snackbarState.isOpen}
+        snackbarState={snackbarState}
         onClose={onSnackbarClose}
-        alertText={snackbarState.alertText}
-        alertSeverity={snackbarState.alertSeverity}
       />
     </Box>
   );

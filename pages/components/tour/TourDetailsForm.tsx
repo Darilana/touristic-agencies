@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { Field, Form, FieldArray, useFormikContext } from 'formik';
+import { Field, Form, useFormikContext } from 'formik';
 import { Button, Box, Typography, Link, TextField } from '@material-ui/core';
 import FormInput from '../common/FormInput';
 import { Tour } from '../../../src/tour/tour.entity';
-import ChipInput from 'material-ui-chip-input';
 import isEqual from 'lodash/isEqual';
 import isEmpty from 'lodash/isEmpty';
 import { TourDetailsStepValues } from './TourDetailsStep';
@@ -11,6 +10,7 @@ import { DropzoneArea } from 'material-ui-dropzone';
 import axios from 'axios';
 import { Agency } from '../../../src/agency/agency.entity';
 import Autocomplete from '@material-ui/lab/Autocomplete';
+import { FieldArrayInput } from './FieldArrayInput';
 
 interface TourDetailsFormProps {
   tour?: Tour;
@@ -26,32 +26,33 @@ const TourDetailsForm: React.FC<TourDetailsFormProps> = ({
 
   const isFormDirty = !isEqual(initialValues, values);
 
-  const validateRequiredField = (value) => {
+  const validateRequiredField = (value: string | number | string[]) => {
     if ((!value && value !== 0) || (Array.isArray(value) && isEmpty(value))) {
       return (
-        <Box>
-          <Typography color="error">Обов'язкове поле</Typography>
-        </Box>
+        <div>
+          <Typography color="error">This field is required</Typography>
+        </div>
       );
     }
   };
 
-  const handleFileUpload = ([file]) => {
+  const handleFileUpload = async ([file]) => {
     if (!file) {
       setFieldValue('image', null);
       return;
     }
     const formData = new FormData();
     formData.append('image', file);
-    return axios
-      .post('http://localhost:3000/api/asset/upload-image', formData, {
+    const response = await axios.post(
+      'http://localhost:3000/api/asset/upload-image',
+      formData,
+      {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-      })
-      .then((response) => {
-        setFieldValue('image', response.data.filename);
-      });
+      },
+    );
+    setFieldValue('image', response.data.filename);
   };
 
   const initialFile = values.image
@@ -62,9 +63,9 @@ const TourDetailsForm: React.FC<TourDetailsFormProps> = ({
     name: agency.name,
   }));
 
-  const handleAgencyChange = (e: React.ChangeEvent, value) => {
+  const handleAgencyChange = (_e: React.ChangeEvent, value: Agency) => {
     const agencyId = agencies?.find(
-      (agency: Agency) => agency.name === value.name,
+      (agency: Agency) => agency?.name === value?.name,
     )?.id;
     setFieldValue('agencyId', agencyId);
   };
@@ -79,46 +80,46 @@ const TourDetailsForm: React.FC<TourDetailsFormProps> = ({
             </Box>
           )}
           <Box mb={2}>
-            <Typography variant="h6">Назва</Typography>
+            <Typography variant="h6">Name</Typography>
             <Field
               required
               id="name"
               name="name"
-              placeholder="Назва туру"
+              placeholder="Tour name"
               component={FormInput}
               validate={validateRequiredField}
             />
           </Box>
           <Box mb={2}>
-            <Typography variant="h6">Опис</Typography>
+            <Typography variant="h6">Description</Typography>
             <Field
               required
               id="description"
               name="description"
-              placeholder="Опис туру"
+              placeholder="Tour description"
               component={FormInput}
               validate={validateRequiredField}
             />
           </Box>
           <Box mb={2}>
-            <Typography variant="h6">Тривалість</Typography>
+            <Typography variant="h6">Duration</Typography>
             <Field
               required
               id="duration"
               name="duration"
-              placeholder="Тривалість туру"
+              placeholder="Number of days the tour lasts"
               component={FormInput}
               validate={validateRequiredField}
             />
           </Box>
           <Box mb={2}>
-            <Typography variant="h6">Ціна</Typography>
+            <Typography variant="h6">Price</Typography>
             <Field
               required
               type="number"
               id="price"
               name="price"
-              placeholder="Ціна туру"
+              placeholder="How much the tour costs"
               component={FormInput}
               validate={validateRequiredField}
             />
@@ -127,17 +128,17 @@ const TourDetailsForm: React.FC<TourDetailsFormProps> = ({
           <Box mb={2}>
             {tour ? (
               <Link href={`/agency/${tour.agency.id}`}>
-                Агенція, що продає тур
+                Agency that sells the tour
               </Link>
             ) : (
               <>
-                <Typography variant="h6">Агенція, що продає тур</Typography>
+                <Typography variant="h6">Agency that sells the tour</Typography>
                 <Field
                   required
                   type="number"
                   id="agencyId"
                   name="agencyId"
-                  placeholder="Агенції, що продає тур"
+                  placeholder="Agency where a tour can be bought"
                   component={() => (
                     <Autocomplete
                       id="agencyId"
@@ -149,8 +150,8 @@ const TourDetailsForm: React.FC<TourDetailsFormProps> = ({
                       }}
                       fullWidth
                       options={agenciesOptions}
-                      getOptionLabel={(option) => option.name}
-                      noOptionsText="Немає варіантів"
+                      getOptionLabel={(option) => option?.name}
+                      noOptionsText="No available options"
                       onChange={handleAgencyChange}
                       getOptionSelected={(option, value) => {
                         return option?.name === value?.name;
@@ -165,68 +166,29 @@ const TourDetailsForm: React.FC<TourDetailsFormProps> = ({
             )}
           </Box>
           <Box mb={2}>
-            <Typography variant="h6">Напрямки</Typography>
-            <FieldArray
+            <Typography variant="h6">Directions</Typography>
+            <FieldArrayInput
+              id="directions"
               name="directions"
-              render={(arrayHelpers) => (
-                <>
-                  <Field
-                    required
-                    id="directions"
-                    name="directions"
-                    placeholder="Напрямки туру"
-                    validate={validateRequiredField}
-                    onBlur={validateRequiredField}
-                    component={() => (
-                      <ChipInput
-                        fullWidth
-                        value={values?.directions}
-                        onAdd={(chip) => arrayHelpers.push(chip)}
-                        onDelete={(chip) => arrayHelpers.remove(chip)}
-                      />
-                    )}
-                  />
-                  {errors.directions &&
-                  !isEqual(initialValues?.directions, values?.directions) ? (
-                    <div>{errors.directions}</div>
-                  ) : null}
-                </>
-              )}
+              placeholder="Tour directions"
+              values={values?.directions}
+              initialValues={initialValues?.directions}
+              errors={errors}
             />
           </Box>
           <Box mb={2}>
-            <Typography variant="h6">Категорії</Typography>
-            <FieldArray
+            <Typography variant="h6">Categories</Typography>
+            <FieldArrayInput
+              id="categories"
               name="categories"
-              render={(arrayHelpers) => (
-                <>
-                  <Field
-                    required
-                    id="categories"
-                    name="categories"
-                    placeholder="Напрямки туру"
-                    validate={validateRequiredField}
-                    component={() => (
-                      <ChipInput
-                        fullWidth
-                        value={values?.categories}
-                        onAdd={(chip) => {
-                          arrayHelpers.push(chip);
-                        }}
-                        onDelete={(chip) => arrayHelpers.remove(chip)}
-                      />
-                    )}
-                  />
-                  {errors.categories &&
-                  !isEqual(initialValues?.categories, values?.categories) ? (
-                    <div>{errors.categories}</div>
-                  ) : null}
-                </>
-              )}
+              placeholder="Categories related to the tour"
+              values={values?.categories}
+              initialValues={initialValues?.categories}
+              errors={errors}
             />
           </Box>
           <Box mb={2}>
-            <Typography variant="h6">Зображення</Typography>
+            <Typography variant="h6">Photos</Typography>
             <DropzoneArea
               onChange={handleFileUpload}
               filesLimit={1}
@@ -241,7 +203,7 @@ const TourDetailsForm: React.FC<TourDetailsFormProps> = ({
             size="large"
             disabled={!isValid || !isFormDirty}
           >
-            Зберегти зміни
+            Save changes
           </Button>
         </Box>
       </Box>

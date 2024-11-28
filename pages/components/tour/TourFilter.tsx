@@ -21,7 +21,7 @@ export const TourFilter: React.FC<TourFilterProps> = ({
   fieldType,
   requestParams,
 }) => {
-  const handleChange = async (event, value) => {
+  const handleChange = async (_e: React.ChangeEvent<{}>, value: Tour) => {
     const params = {
       [fieldType]: value?.name,
     };
@@ -38,7 +38,7 @@ export const TourFilter: React.FC<TourFilterProps> = ({
       id={fieldType}
       options={options}
       style={{ width: 300 }}
-      noOptionsText="Немає варіантів"
+      noOptionsText="No available options"
       onChange={handleChange}
       getOptionLabel={(option) => {
         return option?.name ? option.name : '';

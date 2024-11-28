@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Formik } from 'formik';
 import { Box, Typography } from '@material-ui/core';
-import { Office } from '../../../src/office/office.entity';
 import axios from 'axios';
-import SnackbarMessage from '../common/SnackBarMessage';
+import SnackbarMessage, { SnackbarState } from '../common/SnackBarMessage';
 import { useRouter } from 'next/router';
 import OfficeForm from './OfficeForm';
+import { Office } from 'src/office/office.entity';
 
 interface OfficeStepProps {
   office?: Office;
@@ -13,17 +13,10 @@ interface OfficeStepProps {
   agencyId?: number;
 }
 
-interface OfficeStepValues {
-  address: string;
-  workingHours: string;
-  phoneNumber: string;
-}
-
 const OfficeStep: React.FC<OfficeStepProps> = ({ office, index, agencyId }) => {
-  const [snackbarState, setSnackbarState] = React.useState({
+  const [snackbarState, setSnackbarState] = React.useState<SnackbarState>({
     isOpen: false,
     alertText: '',
-    alertSeverity: '',
   });
 
   const router = useRouter();
@@ -33,7 +26,7 @@ const OfficeStep: React.FC<OfficeStepProps> = ({ office, index, agencyId }) => {
   const onSnackbarClose = () =>
     setSnackbarState({ ...snackbarState, isOpen: false });
 
-  const deleteOffice = (office) => {
+  const deleteOffice = (office: Office) => {
     axios.delete(`http://localhost:3000/api/office/${office.id}`);
     refreshData();
   };
@@ -44,7 +37,9 @@ const OfficeStep: React.FC<OfficeStepProps> = ({ office, index, agencyId }) => {
     phoneNumber: office?.phoneNumber || '',
   };
 
-  const onSubmit = (values: OfficeStepValues) => {
+  const onSubmit = (
+    values: Pick<Office, 'address' | 'workingHours' | 'phoneNumber'>,
+  ) => {
     const operation = office
       ? axios.put(`http://localhost:3000/api/office/${office.id}`, {
           ...values,
@@ -59,15 +54,15 @@ const OfficeStep: React.FC<OfficeStepProps> = ({ office, index, agencyId }) => {
       .then(() => {
         setSnackbarState({
           isOpen: true,
-          alertText: 'Зміни було успішно збережено',
+          alertText: 'Changes were successfully saved',
           alertSeverity: 'success',
         });
         refreshData();
       })
-      .catch((e) => {
+      .catch(() => {
         setSnackbarState({
           isOpen: true,
-          alertText: 'Сталася помилка',
+          alertText: 'An error occurred while saving changes',
           alertSeverity: 'error',
         });
       });
@@ -77,17 +72,15 @@ const OfficeStep: React.FC<OfficeStepProps> = ({ office, index, agencyId }) => {
     <Box mt={4}>
       {typeof index === 'number' && (
         <Box display="flex" justifyContent="center">
-          <Typography variant="h6">Офіс №{index + 1}</Typography>
+          <Typography variant="h6">Office №{index + 1}</Typography>
         </Box>
       )}
       <Formik initialValues={initialValues} onSubmit={onSubmit}>
         <OfficeForm office={office} deleteOffice={deleteOffice} />
       </Formik>
       <SnackbarMessage
-        isOpen={snackbarState.isOpen}
+        snackbarState={snackbarState}
         onClose={onSnackbarClose}
-        alertText={snackbarState.alertText}
-        alertSeverity={snackbarState.alertSeverity}
       />
     </Box>
   );

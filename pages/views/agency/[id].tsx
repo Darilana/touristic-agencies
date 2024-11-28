@@ -12,17 +12,18 @@ import {
 import OfficeStep from '../../components/office/OfficeStep';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import AgencyDetailsStep from '../../components/agency/AgencyDetailsStep';
-import SnackbarMessage from '../../components/common/SnackBarMessage';
+import SnackbarMessage, {
+  SnackbarState,
+} from '../../components/common/SnackBarMessage';
 
 interface AgencyDetailsProps {
   agency: Agency;
 }
 
 const AgencyDetails: NextPage<AgencyDetailsProps> = ({ agency }) => {
-  const [snackbarState, setSnackbarState] = React.useState({
+  const [snackbarState, setSnackbarState] = React.useState<SnackbarState>({
     isOpen: false,
     alertText: '',
-    alertSeverity: '',
   });
 
   const onSnackbarClose = () =>
@@ -32,13 +33,13 @@ const AgencyDetails: NextPage<AgencyDetailsProps> = ({ agency }) => {
     <Box mb={4}>
       <Box mb={2} mt={4} display="flex" justifyContent="center">
         <Typography variant="h5" color="textSecondary">
-          Деталі агенції
+          Agency details
         </Typography>
       </Box>
       <AgencyDetailsStep agency={agency} setSnackbarState={setSnackbarState} />
       <Box display="flex" justifyContent="center" mt={4}>
         <Typography variant="h5" color="textSecondary">
-          Офіси
+          Offices
         </Typography>
       </Box>
       <Box display="flex" justifyContent="center" mt={4}>
@@ -48,7 +49,7 @@ const AgencyDetails: NextPage<AgencyDetailsProps> = ({ agency }) => {
             aria-controls="panel1a-content"
             id="panel1a-header"
           >
-            <Typography>Додати офіс</Typography>
+            <Typography>Add office</Typography>
           </AccordionSummary>
           <AccordionDetails>
             <OfficeStep agencyId={agency.id} />
@@ -59,10 +60,8 @@ const AgencyDetails: NextPage<AgencyDetailsProps> = ({ agency }) => {
         <OfficeStep key={office.id} office={office} index={index} />
       ))}
       <SnackbarMessage
-        isOpen={snackbarState.isOpen}
+        snackbarState={snackbarState}
         onClose={onSnackbarClose}
-        alertText={snackbarState.alertText}
-        alertSeverity={snackbarState.alertSeverity}
       />
     </Box>
   );

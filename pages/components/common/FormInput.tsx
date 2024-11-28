@@ -1,11 +1,13 @@
-import { Box, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 import * as React from 'react';
 
 const FormInput = ({ field, form: { touched, errors }, ...props }) => {
+  const isErrorDisplayed = Boolean(errors[field.name] && touched[field.name]);
+
   return (
-    <Box>
+    <div>
       <TextField
-        error={!!(errors[field.name] && touched[field.name])}
+        error={isErrorDisplayed}
         fullWidth
         id={field.name}
         variant="outlined"
@@ -13,10 +15,8 @@ const FormInput = ({ field, form: { touched, errors }, ...props }) => {
         {...props}
       />
 
-      {touched[field.name] && errors[field.name] && (
-        <div className="error">{errors[field.name]}</div>
-      )}
-    </Box>
+      {isErrorDisplayed && <div className="error">{errors[field.name]}</div>}
+    </div>
   );
 };
 

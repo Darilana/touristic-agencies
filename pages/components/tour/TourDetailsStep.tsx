@@ -1,16 +1,16 @@
 import * as React from 'react';
 import axios from 'axios';
-import { NextPage } from 'next';
 import { Tour } from '../../../src/tour/tour.entity';
 import TourDetailsForm from './TourDetailsForm';
 import { Formik } from 'formik';
 import { useRouter } from 'next/router';
 import moment from 'moment';
 import { Agency } from '../../../src/agency/agency.entity';
+import { SnackbarState } from '../common/SnackBarMessage';
 
 interface TourDetailsStepProps {
   tour?: Tour;
-  setSnackbarState: ({ isOpen, alertText, alertSeverity }) => void;
+  setSnackbarState: (snackbarState: SnackbarState) => void;
   agencies?: Agency[];
 }
 
@@ -72,15 +72,15 @@ const TourDetailsStep: React.FC<TourDetailsStepProps> = ({
       .then(() => {
         setSnackbarState({
           isOpen: true,
-          alertText: 'Зміни було успішно збережено',
+          alertText: 'Changes were successfully saved',
           alertSeverity: 'success',
         });
         refreshData();
       })
-      .catch((e) => {
+      .catch(() => {
         setSnackbarState({
           isOpen: true,
-          alertText: 'Сталася помилка',
+          alertText: 'An error occurred while saving changes',
           alertSeverity: 'error',
         });
       });

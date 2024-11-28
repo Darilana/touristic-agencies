@@ -1,27 +1,34 @@
 import { Snackbar } from '@material-ui/core';
 import * as React from 'react';
-import MuiAlert from '@material-ui/lab/Alert';
+import MuiAlert, { Color } from '@material-ui/lab/Alert';
 
-interface SnackbarMessageProps {
+export interface SnackbarState {
   isOpen: boolean;
-  onClose: () => void;
   alertText: string;
-  alertSeverity: string;
+  alertSeverity?: Color;
 }
 
-const Alert = (props) => <MuiAlert elevation={6} variant="filled" {...props} />;
+interface SnackbarMessageProps {
+  snackbarState: SnackbarState;
+  onClose: () => void;
+}
 
 const SnackbarMessage: React.FC<SnackbarMessageProps> = ({
-  isOpen,
+  snackbarState,
   onClose,
-  alertText,
-  alertSeverity,
 }) => {
+  const { isOpen, alertSeverity, alertText } = snackbarState;
+
   return (
     <Snackbar open={isOpen} autoHideDuration={3000} onClose={onClose}>
-      <Alert onClose={onClose} severity={alertSeverity}>
+      <MuiAlert
+        elevation={6}
+        variant="filled"
+        onClose={onClose}
+        severity={alertSeverity}
+      >
         {alertText}
-      </Alert>
+      </MuiAlert>
     </Snackbar>
   );
 };

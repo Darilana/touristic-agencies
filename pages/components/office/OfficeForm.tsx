@@ -5,20 +5,20 @@ import FormInput from '../common/FormInput';
 import { Office } from '../../../src/office/office.entity';
 import isEmpty from 'lodash/isEmpty';
 
-interface OfficeForm {
+interface OfficeFormProps {
   deleteOffice: (office: Office) => void;
   office?: Office;
 }
 
-const OfficeForm: React.FC<OfficeForm> = ({ office, deleteOffice }) => {
+const OfficeForm: React.FC<OfficeFormProps> = ({ office, deleteOffice }) => {
   const { dirty, isValid } = useFormikContext();
 
-  const validateRequiredField = (value) => {
-    if (!value || (Array.isArray(value) && isEmpty(value))) {
+  const validateRequiredField = (value: string | string[]) => {
+    if (isEmpty(value)) {
       return (
-        <Box>
-          <Typography color="error">Обов'язкове поле</Typography>
-        </Box>
+        <div>
+          <Typography color="error">This field is required</Typography>
+        </div>
       );
     }
   };
@@ -28,34 +28,34 @@ const OfficeForm: React.FC<OfficeForm> = ({ office, deleteOffice }) => {
       <Box display="flex" justifyContent="center">
         <Box display="flex" flexDirection="column" width={600}>
           <Box mb={2}>
-            <Typography variant="h6">Адреса</Typography>
+            <Typography variant="h6">Address</Typography>
             <Field
               required
               id="address"
               name="address"
-              placeholder="Адреса офісу"
+              placeholder="Office address"
               component={FormInput}
               validate={validateRequiredField}
             />
           </Box>
           <Box mb={2}>
-            <Typography variant="h6">Час роботи</Typography>
+            <Typography variant="h6">Working hours</Typography>
             <Field
               required
               id="workingHours"
               name="workingHours"
-              placeholder="Час роботи офісу"
+              placeholder="Office availability hours"
               component={FormInput}
               validate={validateRequiredField}
             />
           </Box>
           <Box mb={3}>
-            <Typography variant="h6">Номер телефону</Typography>
+            <Typography variant="h6">Phone number</Typography>
             <Field
               required
               id="phoneNumber"
               name="phoneNumber"
-              placeholder="Номер телефону офісу"
+              placeholder="Office phone number"
               component={FormInput}
               validate={validateRequiredField}
             />
@@ -67,7 +67,7 @@ const OfficeForm: React.FC<OfficeForm> = ({ office, deleteOffice }) => {
             size="large"
             disabled={!dirty || !isValid}
           >
-            {office ? 'Зберегти зміни' : 'Додати'}
+            {office ? 'Save changes' : 'Add office'}
           </Button>
           {office && (
             <>
@@ -78,7 +78,7 @@ const OfficeForm: React.FC<OfficeForm> = ({ office, deleteOffice }) => {
                 size="large"
                 onClick={() => deleteOffice(office)}
               >
-                Видалити офіс
+                Delete office
               </Button>
             </>
           )}
